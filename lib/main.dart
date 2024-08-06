@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:zapping_flutter/ui/widget/ZappingWidget.dart';
+import 'package:flutter/services.dart';
+import 'package:properties/properties.dart';
+import 'package:zapping_flutter/ui/widget/zapping_widget.dart';
 
-void main() {
+late String zappingUrl;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // todo change to DefaultAssetBundle.of(context)
+  final appPropertiesString =
+      await rootBundle.loadString("properties/app.properties");
+
+  zappingUrl = Properties.fromString(appPropertiesString).get("zapping.url")!;
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
