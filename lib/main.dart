@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:properties/properties.dart';
 import 'package:zapping_flutter/ui/widget/zapping_widget.dart';
 
-late String zappingUrl;
+late final String zappingUrl;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
