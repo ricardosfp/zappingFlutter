@@ -1,4 +1,4 @@
-package com.ricardosfp.zapping.flutter.zapping_flutter
+package com.ricardosfp.zapping.flutter
 
 import io.flutter.embedding.android.FlutterActivity
 
