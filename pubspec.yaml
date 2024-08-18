@@ -41,6 +41,7 @@ dependencies:
   dart_rss: ^3.0.3
 
   http: ^1.2.2
+  pretty_http_logger: ^1.0.4
 
   provider: ^6.1.2
 

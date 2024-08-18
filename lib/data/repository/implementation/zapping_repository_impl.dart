@@ -1,9 +1,12 @@
 import 'package:dart_rss/dart_rss.dart';
-import 'package:http/http.dart' as http;
+import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:zapping_flutter/data/repository/contract/zapping_repository.dart';
 import 'package:zapping_flutter/data/repository/model/my_article.dart';
 
 final class ZappingRepositoryImpl implements ZappingRepository {
+  late final http = HttpWithMiddleware.build(
+      middlewares: [HttpLogger(logLevel: LogLevel.BODY)]);
+
   // todo handle exceptions
   @override
   Future<List<MyArticle>> getMatches(String url) async {
