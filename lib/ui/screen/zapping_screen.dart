@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zapping_flutter/di/di.dart';
 import 'package:zapping_flutter/ui/view_model/zapping_provider.dart';
 import 'package:zapping_flutter/ui/widget/zapping_item.dart';
 
@@ -11,8 +12,7 @@ class ZappingScreen extends StatefulWidget {
 }
 
 class _ZappingScreenState extends State<ZappingScreen> {
-  // todo inject this
-  late final _zappingProvider = ZappingProvider();
+  late final _zappingProvider = getIt<ZappingProvider>();
 
   @override
   void initState() {
@@ -20,7 +20,6 @@ class _ZappingScreenState extends State<ZappingScreen> {
     _zappingProvider.getMatches();
   }
 
-  // todo extract the item into a new widget
   @override
   Widget build(BuildContext context) {
     return Scaffold(

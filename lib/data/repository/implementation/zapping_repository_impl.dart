@@ -1,10 +1,12 @@
 import 'package:dart_rss/dart_rss.dart';
+import 'package:injectable/injectable.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:zapping_flutter/data/repository/contract/zapping_repository.dart';
 import 'package:zapping_flutter/data/repository/model/my_article.dart';
 
+@LazySingleton(as: ZappingRepository)
 final class ZappingRepositoryImpl implements ZappingRepository {
-  late final http = HttpWithMiddleware.build(
+  late final _http = HttpWithMiddleware.build(
       middlewares: [HttpLogger(logLevel: LogLevel.BODY)]);
 
   // todo handle exceptions
@@ -13,7 +15,7 @@ final class ZappingRepositoryImpl implements ZappingRepository {
     // I am using http because dio was not correctly decoding accents
     // the user-agent part is because the website was giving us error 429 with the default user-agent
     final response =
-        await http.get(Uri.parse(url), headers: {"user-agent": ""});
+        await _http.get(Uri.parse(url), headers: {"user-agent": ""});
 
     final rssFeed = RssFeed.parse(response.body);
 
