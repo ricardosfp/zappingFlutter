@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:zapping_flutter/ui/view_model/zapping_provider.dart';
+import 'package:zapping_flutter/ui/widget/zapping_item.dart';
 
-class ZappingWidget extends StatefulWidget {
-  const ZappingWidget({super.key});
+class ZappingScreen extends StatefulWidget {
+  const ZappingScreen({super.key});
 
   @override
-  State<ZappingWidget> createState() => _ZappingWidgetState();
+  State<ZappingScreen> createState() => _ZappingScreenState();
 }
 
-class _ZappingWidgetState extends State<ZappingWidget> {
+class _ZappingScreenState extends State<ZappingScreen> {
   // todo inject this
   late final _zappingProvider = ZappingProvider();
-
-  late final _dateFormat = DateFormat("HH:mm");
-
-  late final _textStyle =
-      const TextStyle(color: Color(0xff000000), fontSize: 16);
 
   @override
   void initState() {
@@ -46,16 +41,7 @@ class _ZappingWidgetState extends State<ZappingWidget> {
 
                     return Container(
                       margin: const EdgeInsets.only(left: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("${match.homeTeam} x ${match.awayTeam}",
-                              style: _textStyle),
-                          Text(_dateFormat.format(match.date),
-                              style: _textStyle),
-                          Text(match.channel, style: _textStyle),
-                        ],
-                      ),
+                      child: ZappingItem(match: match),
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {
