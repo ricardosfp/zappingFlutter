@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:properties/properties.dart';
-import 'package:zapping_flutter/ui/widget/zapping_widget.dart';
+import 'package:zapping_flutter/ui/screen/zapping_screen.dart';
 
 late final String zappingUrl;
 
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const ZappingWidget(),
+      home: const ZappingScreen(),
     );
   }
 }
