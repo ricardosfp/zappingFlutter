@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:properties/properties.dart';
+import 'package:zapping_flutter/di/di.dart';
 import 'package:zapping_flutter/ui/screen/zapping_screen.dart';
 
 late final String zappingUrl;
@@ -14,6 +15,7 @@ Future<void> main() async {
 
   zappingUrl = Properties.fromString(appPropertiesString).get("zapping.url")!;
 
+  configureDependencies();
   runApp(const MyApp());
 }
 
