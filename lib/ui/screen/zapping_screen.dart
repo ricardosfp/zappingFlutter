@@ -31,12 +31,13 @@ class _ZappingScreenState extends State<ZappingScreen> {
           value: _zappingProvider,
           child: Consumer<ZappingProvider>(
             builder: (context, zappingProvider, Widget? child) {
+              final matches = zappingProvider.matches;
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 child: ListView.separated(
-                  itemCount: zappingProvider.matches.length,
+                  itemCount: matches.length,
                   itemBuilder: (context, index) {
-                    final match = zappingProvider.matches[index];
+                    final match = matches[index];
 
                     return Container(
                       margin: const EdgeInsets.only(left: 10),
