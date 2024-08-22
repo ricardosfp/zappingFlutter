@@ -13,16 +13,10 @@ class ZappingProvider extends ChangeNotifier {
   late final _matchParser = getIt<MatchParser>();
   late final _dateUtils = getIt<DateUtils>();
 
-  late Iterable<MyMatch> _matches = const [];
-
-  List<MyMatch> get matches {
-    return List.unmodifiable(_matches);
-  }
-
   late final Map<DateTime, List<MyMatch>> _dayMap = {};
 
   Map<DateTime, List<MyMatch>> get matchMap {
-    return _dayMap;
+    return Map.unmodifiable(_dayMap);
   }
 
   void getMatches() async {
@@ -34,13 +28,14 @@ class ZappingProvider extends ChangeNotifier {
       },
     );
 
-    _matches = matchesWithNulls.nonNulls;
+    final matches = matchesWithNulls.nonNulls;
 
-    // todo order matches by date. Do not assume that they come ordered
+    // todo order matches by date. Do not assume that they come ordered.
+    //  Also order the keys
 
     _dayMap.clear();
     // split matches into days
-    for (var match in _matches) {
+    for (var match in matches) {
       _dayMap.putIfAbsent(_dateUtils.dateAtMidnight(match.date), () {
         return [];
       }).add(match);
