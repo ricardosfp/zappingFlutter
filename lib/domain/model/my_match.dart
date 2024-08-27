@@ -7,4 +7,9 @@ final class MyMatch {
 
   const MyMatch(
       this.homeTeam, this.awayTeam, this.date, this.channel, this.originalText);
+
+  @override
+  String toString() {
+    return 'MyMatch{homeTeam: $homeTeam, awayTeam: $awayTeam, date: $date, channel: $channel, originalText: $originalText}';
+  }
 }
