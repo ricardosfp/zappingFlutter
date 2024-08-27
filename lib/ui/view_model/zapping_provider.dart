@@ -28,10 +28,14 @@ class ZappingProvider extends ChangeNotifier {
       },
     );
 
-    final matches = matchesWithNulls.nonNulls;
+    final matches = matchesWithNulls.nonNulls.toList();
 
-    // todo order matches by date. Do not assume that they come ordered.
-    //  Also order the keys
+    // order matches by date. Do not assume that they come ordered
+    // if we order the list of matches then we do not need to order the map
+    // it is simpler this way. Or else I could use a SplayTreeMap
+    matches.sort((a, b) {
+      return a.date.compareTo(b.date);
+    });
 
     _dayMap.clear();
     // split matches into days
