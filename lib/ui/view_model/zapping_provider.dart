@@ -38,11 +38,19 @@ class ZappingProvider extends ChangeNotifier {
     });
 
     _dayMap.clear();
+
     // split matches into days
     for (var match in matches) {
       _dayMap.putIfAbsent(_dateUtils.dateAtMidnight(match.date), () {
         return [];
       }).add(match);
+    }
+
+    // make the lists unmodifiable
+    for (final key in _dayMap.keys) {
+      _dayMap.update(key, (value) {
+        return List.unmodifiable(value);
+      });
     }
 
     notifyListeners();
