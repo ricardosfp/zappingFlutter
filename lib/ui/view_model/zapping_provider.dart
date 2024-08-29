@@ -1,3 +1,6 @@
+import 'dart:isolate';
+
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zapping_flutter/data/repository/contract/zapping_repository.dart';
@@ -44,7 +47,14 @@ class ZappingProvider extends ChangeNotifier {
       _dayMap.putIfAbsent(_dateUtils.dateAtMidnight(match.date), () {
         return [];
       }).add(match);
+
+      // schedule an alarm for this match
+      // todo the alarm manager should be in another class
     }
+
+    // todo check for errors
+    // AndroidAlarmManager.oneShot(
+    //     const Duration(seconds: 4), 16, printHello);
 
     // make the lists unmodifiable
     for (final key in _dayMap.keys) {
@@ -55,4 +65,11 @@ class ZappingProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  // @pragma('vm:entry-point')
+  // static void printHello() {
+  //   final DateTime now = DateTime.now();
+  //   final int isolateId = Isolate.current.hashCode;
+  //   print("[$now] Hello, world! isolate=$isolateId function='$printHello'");
+  // }
 }

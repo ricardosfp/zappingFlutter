@@ -1,3 +1,4 @@
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:properties/properties.dart';
@@ -14,6 +15,8 @@ Future<void> main() async {
       await rootBundle.loadString("properties/app.properties");
 
   zappingUrl = Properties.fromString(appPropertiesString).get("zapping.url")!;
+
+  await AndroidAlarmManager.initialize();
 
   configureDependencies();
   runApp(const MyApp());
