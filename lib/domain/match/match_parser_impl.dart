@@ -4,7 +4,6 @@ import 'package:zapping_flutter/data/repository/model/my_article.dart';
 import 'package:zapping_flutter/domain/match/match_parser.dart';
 import 'package:zapping_flutter/domain/model/my_match.dart';
 
-// todo test
 @LazySingleton(as: MatchParser)
 final class MatchParserImpl implements MatchParser {
   static final _dateFormat = DateFormat("E, d MMM yyyy HH:mm:ss");
