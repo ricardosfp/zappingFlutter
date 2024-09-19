@@ -1,6 +1,6 @@
 import 'package:zapping_flutter/data/repository/model/my_article.dart';
-import 'package:zapping_flutter/domain/model/my_match.dart';
+import 'package:zapping_flutter/domain/match/match_parse_result.dart';
 
 abstract interface class MatchParser {
-  MyMatch? parse(MyArticle article);
+  MatchParseResult parse(MyArticle article);
 }

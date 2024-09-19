@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zapping_flutter/data/repository/contract/zapping_repository.dart';
 import 'package:zapping_flutter/di/di.dart';
+import 'package:zapping_flutter/domain/match/match_parse_result.dart';
 import 'package:zapping_flutter/domain/match/match_parser.dart';
 import 'package:zapping_flutter/domain/model/my_match.dart';
 import 'package:zapping_flutter/infrastructure/date_utils.dart';
@@ -19,16 +20,21 @@ class ZappingProvider extends ChangeNotifier {
     return Map.unmodifiable(_dayMap);
   }
 
+  // todo error handling in the repository's response
   void getMatches() async {
     final articleList = await _zappingRepository.getMatches(zappingUrl);
 
-    final matchesWithNulls = articleList.map(
-      (article) {
-        return _matchParser.parse(article);
-      },
-    );
+    final matches = articleList
+        .map((article) {
+          final matchParseResult = _matchParser.parse(article);
 
-    final matches = matchesWithNulls.nonNulls.toList();
+          if (matchParseResult is MatchParseSuccess) {
+            return matchParseResult.match;
+          }
+          return null;
+        })
+        .nonNulls
+        .toList();
 
     // order matches by date. Do not assume that they come ordered
     // if we order the list of matches then we do not need to order the map
