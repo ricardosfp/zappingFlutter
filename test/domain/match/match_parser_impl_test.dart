@@ -1,5 +1,6 @@
 import 'package:test/test.dart';
 import 'package:zapping_flutter/data/repository/model/my_article.dart';
+import 'package:zapping_flutter/domain/match/match_parse_result.dart';
 import 'package:zapping_flutter/domain/match/match_parser_impl.dart';
 
 void main() {
@@ -18,17 +19,18 @@ void main() {
     matchParser = MatchParserImpl();
   });
 
-  test("parse valid article", () {
-    final match = matchParser.parse(validArticle);
+  test("parse valid article returns success", () {
+    final matchParseResult = matchParser.parse(validArticle);
 
-    expect(match, isNotNull);
-    if (match != null) {
-      expect(match.originalText, validArticleTitle);
-      expect(match.homeTeam, validArticleHomeTeam);
-      expect(match.awayTeam, validArticleAwayTeam);
-      expect(match.date, DateTime(2024, 5, 14, 23, 0, 0));
-      expect(match.channel, validArticleChannel);
-      expect(match.originalText, validArticleTitle);
-    }
+    expect(matchParseResult, isA<MatchParseSuccess>());
+
+    final match = (matchParseResult as MatchParseSuccess).match;
+
+    expect(match.originalText, validArticleTitle);
+    expect(match.homeTeam, validArticleHomeTeam);
+    expect(match.awayTeam, validArticleAwayTeam);
+    expect(match.date, DateTime(2024, 5, 14, 23, 0, 0));
+    expect(match.channel, validArticleChannel);
+    expect(match.originalText, validArticleTitle);
   });
 }

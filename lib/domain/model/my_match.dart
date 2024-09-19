@@ -1,3 +1,4 @@
+/// This class is called [MyMatch] to not be confused with [Match]
 final class MyMatch {
   final String homeTeam;
   final String awayTeam;

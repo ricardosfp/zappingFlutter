@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 import 'package:zapping_flutter/data/repository/model/my_article.dart';
+import 'package:zapping_flutter/domain/match/match_parse_result.dart';
 import 'package:zapping_flutter/domain/match/match_parser.dart';
 import 'package:zapping_flutter/domain/model/my_match.dart';
 
@@ -10,7 +11,7 @@ final class MatchParserImpl implements MatchParser {
 
   // todo handle errors
   @override
-  MyMatch? parse(MyArticle article) {
+  MatchParseResult parse(MyArticle article) {
     try {
       final date = _dateFormat.parse(article.date);
       final originalText = article.title;
@@ -24,14 +25,21 @@ final class MatchParserImpl implements MatchParser {
           final channel = parts[2];
 
           if (homeTeam.isEmpty || awayTeam.isEmpty || channel.isEmpty) {
-            return null;
+            return MatchParseTitleError();
           } else {
-            return MyMatch(homeTeam, awayTeam, date, channel, originalText);
+            return MatchParseSuccess(
+                MyMatch(homeTeam, awayTeam, date, channel, originalText));
           }
+        } else {
+          return MatchParseTitleError();
         }
+      } else {
+        return MatchParseTitleError();
       }
+    } on FormatException catch (ex) {
+      return MatchParseDateError(ex);
+    } on Exception catch (ex) {
+      return MatchParseExceptionError(ex);
     } finally {}
-
-    return null;
   }
 }
