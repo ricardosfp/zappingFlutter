@@ -24,10 +24,10 @@ class MatchParseDateError implements MatchParseError {
 
 class MatchParseTitleError implements MatchParseError {}
 
-class MatchParseExceptionError implements MatchParseError {
+class MatchParseOtherExceptionError implements MatchParseError {
   final Exception exception;
 
-  MatchParseExceptionError(this.exception);
+  MatchParseOtherExceptionError(this.exception);
 }
 
 class MatchParseUnknownError implements MatchParseError {}

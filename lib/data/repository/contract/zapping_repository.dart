@@ -1,5 +1,5 @@
-import 'package:zapping_flutter/data/repository/model/my_article.dart';
+import 'package:zapping_flutter/data/repository/contract/get_articles_result.dart';
 
 abstract interface class ZappingRepository {
-  Future<List<MyArticle>> getMatches(String url);
+  Future<GetArticlesResult> getArticles(String url);
 }
