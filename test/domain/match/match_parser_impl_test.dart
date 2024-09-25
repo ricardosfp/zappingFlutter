@@ -15,6 +15,15 @@ void main() {
       "$validArticleHomeTeam x $validArticleAwayTeam - 14/05 23:00 - $validArticleChannel";
   const validArticle = MyArticle(validArticleDateString, validArticleTitle);
 
+  // invalid articles
+  const invalidArticleInvalidDate = MyArticle("14 May 24", validArticleTitle);
+  const invalidArticleInvalidHomeTeam = MyArticle(
+      validArticleDateString, " x Atlético Mineiro - 14/05 23:00 - SportTv1");
+  const invalidArticleInvalidAwayTeam =
+      MyArticle(validArticleDateString, "Peñarol x  - 14/05 23:00 - SportTv1");
+  const invalidArticleInvalidChannel = MyArticle(
+      validArticleDateString, "Peñarol x Atlético Mineiro - 14/05 23:00 - ");
+
   setUp(() {
     matchParser = MatchParserImpl();
   });
@@ -32,5 +41,31 @@ void main() {
     expect(match.date, DateTime(2024, 5, 14, 23, 0, 0));
     expect(match.channel, validArticleChannel);
     expect(match.originalText, validArticleTitle);
+  });
+
+  group("failure tests", () {
+    test("parse invalid date returns date error", () {
+      final matchParseResult = matchParser.parse(invalidArticleInvalidDate);
+
+      expect(matchParseResult, isA<MatchParseDateError>());
+    });
+
+    test("parse invalid home team returns title error", () {
+      final matchParseResult = matchParser.parse(invalidArticleInvalidHomeTeam);
+
+      expect(matchParseResult, isA<MatchParseTitleError>());
+    });
+
+    test("parse invalid away team returns title error", () {
+      final matchParseResult = matchParser.parse(invalidArticleInvalidAwayTeam);
+
+      expect(matchParseResult, isA<MatchParseTitleError>());
+    });
+
+    test("parse invalid channel returns title error", () {
+      final matchParseResult = matchParser.parse(invalidArticleInvalidChannel);
+
+      expect(matchParseResult, isA<MatchParseTitleError>());
+    });
   });
 }
