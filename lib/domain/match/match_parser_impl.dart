@@ -9,7 +9,6 @@ import 'package:zapping_flutter/domain/model/my_match.dart';
 final class MatchParserImpl implements MatchParser {
   static final _dateFormat = DateFormat("E, d MMM yyyy HH:mm:ss");
 
-  // todo handle errors
   @override
   MatchParseResult parse(MyArticle article) {
     try {
@@ -39,7 +38,7 @@ final class MatchParserImpl implements MatchParser {
     } on FormatException catch (ex) {
       return MatchParseDateError(ex);
     } on Exception catch (ex) {
-      return MatchParseExceptionError(ex);
-    } finally {}
+      return MatchParseOtherExceptionError(ex);
+    }
   }
 }

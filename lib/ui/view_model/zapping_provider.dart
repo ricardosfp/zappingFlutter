@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
+import 'package:zapping_flutter/data/repository/contract/get_articles_result.dart';
 import 'package:zapping_flutter/data/repository/contract/zapping_repository.dart';
 import 'package:zapping_flutter/di/di.dart';
 import 'package:zapping_flutter/domain/match/match_parse_result.dart';
@@ -20,45 +21,57 @@ class ZappingProvider extends ChangeNotifier {
     return Map.unmodifiable(_dayMap);
   }
 
-  // todo error handling in the repository's response
+  // todo manage states
   void getMatches() async {
-    final articleList = await _zappingRepository.getMatches(zappingUrl);
+    final getArticlesResult = await _zappingRepository.getArticles(zappingUrl);
 
-    final matches = articleList
-        .map((article) {
-          final matchParseResult = _matchParser.parse(article);
+    switch (getArticlesResult) {
+      case GetArticlesSuccess():
+        // todo this should be done in a future Use Case, not here, to avoid calling the repository,
+        //  getting a response and then calling the domain layer
+        final matches = getArticlesResult.articles
+            .map((article) {
+              final matchParseResult = _matchParser.parse(article);
 
-          if (matchParseResult is MatchParseSuccess) {
-            return matchParseResult.match;
-          }
-          return null;
-        })
-        .nonNulls
-        .toList();
+              if (matchParseResult is MatchParseSuccess) {
+                return matchParseResult.match;
+              }
+              return null;
+            })
+            .nonNulls
+            .toList();
 
-    // order matches by date. Do not assume that they come ordered
-    // if we order the list of matches then we do not need to order the map
-    // it is simpler this way. Or else I could use a SplayTreeMap
-    matches.sort((a, b) {
-      return a.date.compareTo(b.date);
-    });
+        // order matches by date. Do not assume that they come ordered
+        // if we order the list of matches then we do not need to order the map
+        // it is simpler this way. Or else I could use a SplayTreeMap
+        matches.sort((a, b) {
+          return a.date.compareTo(b.date);
+        });
 
-    _dayMap.clear();
+        _dayMap.clear();
 
-    // split matches into days
-    for (var match in matches) {
-      _dayMap.putIfAbsent(_dateUtils.dateAtMidnight(match.date), () {
-        return [];
-      }).add(match);
+        // split matches into days
+        for (var match in matches) {
+          _dayMap.putIfAbsent(_dateUtils.dateAtMidnight(match.date), () {
+            return [];
+          }).add(match);
+        }
+
+        // make the lists unmodifiable
+        for (final key in _dayMap.keys) {
+          _dayMap.update(key, (value) {
+            return List.unmodifiable(value);
+          });
+        }
+
+        notifyListeners();
+
+      case GetArticlesHttpError():
+      // TODO: Handle this case.
+      case GetArticlesParseError():
+      // TODO: Handle this case.
+      case GetArticlesOtherExceptionError():
+      // TODO: Handle this case.
     }
-
-    // make the lists unmodifiable
-    for (final key in _dayMap.keys) {
-      _dayMap.update(key, (value) {
-        return List.unmodifiable(value);
-      });
-    }
-
-    notifyListeners();
   }
 }
