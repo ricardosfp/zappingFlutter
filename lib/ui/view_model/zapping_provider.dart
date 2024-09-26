@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zapping_flutter/data/repository/contract/get_articles_result.dart';
@@ -15,14 +17,15 @@ class ZappingProvider extends ChangeNotifier {
   late final _matchParser = getIt<MatchParser>();
   late final _dateUtils = getIt<DateUtils>();
 
-  late final Map<DateTime, List<MyMatch>> _dayMap = {};
+  late final LinkedHashMap<DateTime, List<MyMatch>> _dayMap = LinkedHashMap();
+  UiState _uiState = UiLoading();
 
-  Map<DateTime, List<MyMatch>> get matchMap {
-    return Map.unmodifiable(_dayMap);
-  }
+  UiState get uiState => _uiState;
 
   // todo manage states
   void getMatches() async {
+    _uiState = UiLoading();
+
     final getArticlesResult = await _zappingRepository.getArticles(zappingUrl);
 
     switch (getArticlesResult) {
@@ -64,14 +67,32 @@ class ZappingProvider extends ChangeNotifier {
           });
         }
 
+        _uiState = UiDataReady(Map.unmodifiable(_dayMap));
         notifyListeners();
 
       case GetArticlesHttpError():
-      // TODO: Handle this case.
+        _uiState = UiError();
+        notifyListeners();
       case GetArticlesParseError():
-      // TODO: Handle this case.
+        _uiState = UiError();
+        notifyListeners();
       case GetArticlesOtherExceptionError():
-      // TODO: Handle this case.
+        _uiState = UiError();
+        notifyListeners();
     }
   }
 }
+
+// this can be made generic
+sealed class UiState {}
+
+class UiDataReady implements UiState {
+  // this one should be unmodifiable
+  final Map<DateTime, List<MyMatch>> dayMap;
+
+  UiDataReady(this.dayMap);
+}
+
+class UiLoading implements UiState {}
+
+class UiError implements UiState {}

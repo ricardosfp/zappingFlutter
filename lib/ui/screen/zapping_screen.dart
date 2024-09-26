@@ -29,37 +29,58 @@ class _ZappingScreenState extends State<ZappingScreen> {
       value: _zappingProvider,
       child: Consumer<ZappingProvider>(
         builder: (context, zappingProvider, Widget? child) {
-          final matchMap = zappingProvider.matchMap;
+          final uiState = zappingProvider.uiState;
 
-          final tabs = matchMap.keys.map(
-            (matchDay) {
-              return Tab(text: _tabDateFormat.format(matchDay));
-            },
-          ).toList();
+          // todo check switch as expression
+          switch (uiState) {
+            case UiDataReady():
+              final tabs = uiState.dayMap.keys.map(
+                (matchDay) {
+                  return Tab(text: _tabDateFormat.format(matchDay));
+                },
+              ).toList();
 
-          final zappingDays = matchMap.values.map(
-            (matchList) {
-              return ZappingDay(matches: matchList);
-            },
-          ).toList();
+              final zappingDays = uiState.dayMap.values.map(
+                (matchList) {
+                  return ZappingDay(matches: matchList);
+                },
+              ).toList();
 
-          return DefaultTabController(
-            length: matchMap.length,
-            child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                title: const Text("Zapping"),
-                bottom: TabBar(
-                  tabAlignment: TabAlignment.center,
-                  tabs: tabs,
-                  isScrollable: true,
+              return DefaultTabController(
+                length: uiState.dayMap.length,
+                child: Scaffold(
+                  appBar: AppBar(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.inversePrimary,
+                    title: const Text("Zapping"),
+                    bottom: TabBar(
+                      tabAlignment: TabAlignment.center,
+                      tabs: tabs,
+                      isScrollable: true,
+                    ),
+                  ),
+                  body: TabBarView(
+                    children: zappingDays,
+                  ),
                 ),
-              ),
-              body: TabBarView(
-                children: zappingDays,
-              ),
-            ),
-          );
+              );
+            case UiLoading():
+              // TODO: Handle this case.
+              return Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  title: const Text("Zapping"),
+                ),
+              );
+            case UiError():
+              // TODO: Handle this case.
+              return Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  title: const Text("Zapping"),
+                ),
+              );
+          }
         },
       ),
     );
