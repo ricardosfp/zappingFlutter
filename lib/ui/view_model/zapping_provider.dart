@@ -13,9 +13,18 @@ import 'package:zapping_flutter/main.dart';
 
 @lazySingleton
 class ZappingProvider extends ChangeNotifier {
-  late final _zappingRepository = getIt<ZappingRepository>();
-  late final _matchParser = getIt<MatchParser>();
-  late final _dateUtils = getIt<DateUtils>();
+  late final ZappingRepository _zappingRepository;
+  late final MatchParser _matchParser;
+  late final DateUtils _dateUtils;
+
+  ZappingProvider(
+      {ZappingRepository? zappingRepository,
+      MatchParser? matchParser,
+      DateUtils? dateUtils}) {
+    _zappingRepository = zappingRepository ?? getIt<ZappingRepository>();
+    _matchParser = matchParser ?? getIt<MatchParser>();
+    _dateUtils = dateUtils ?? getIt<DateUtils>();
+  }
 
   late final LinkedHashMap<DateTime, List<MyMatch>> _dayMap = LinkedHashMap();
   UiState _uiState = UiLoading();
