@@ -20,11 +20,10 @@ class ZappingProvider extends ChangeNotifier {
   ZappingProvider(
       {ZappingRepository? zappingRepository,
       MatchParser? matchParser,
-      DateUtils? dateUtils}) {
-    _zappingRepository = zappingRepository ?? getIt<ZappingRepository>();
-    _matchParser = matchParser ?? getIt<MatchParser>();
-    _dateUtils = dateUtils ?? getIt<DateUtils>();
-  }
+      DateUtils? dateUtils})
+      : _zappingRepository = zappingRepository ?? getIt<ZappingRepository>(),
+        _matchParser = matchParser ?? getIt<MatchParser>(),
+        _dateUtils = dateUtils ?? getIt<DateUtils>();
 
   late final LinkedHashMap<DateTime, List<MyMatch>> _dayMap = LinkedHashMap();
   UiState _uiState = UiLoading();
@@ -102,6 +101,18 @@ class UiDataReady implements UiState {
   UiDataReady(this.dayMap);
 }
 
-class UiLoading implements UiState {}
+class UiLoading implements UiState {
+  static final UiLoading _instance = UiLoading._();
 
-class UiError implements UiState {}
+  UiLoading._();
+
+  factory UiLoading() => _instance;
+}
+
+class UiError implements UiState {
+  static final UiError _instance = UiError._();
+
+  UiError._();
+
+  factory UiError() => _instance;
+}
