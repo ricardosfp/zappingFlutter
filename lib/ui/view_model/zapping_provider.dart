@@ -13,9 +13,9 @@ import 'package:zapping_flutter/main.dart';
 
 @lazySingleton
 class ZappingProvider extends ChangeNotifier {
-  late final ZappingRepository _zappingRepository;
-  late final MatchParser _matchParser;
-  late final DateUtils _dateUtils;
+  final ZappingRepository _zappingRepository;
+  final MatchParser _matchParser;
+  final DateUtils _dateUtils;
 
   ZappingProvider(
       {ZappingRepository? zappingRepository,

@@ -5,13 +5,17 @@ import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:zapping_flutter/data/repository/contract/get_articles_result.dart';
 import 'package:zapping_flutter/data/repository/contract/zapping_repository.dart';
 import 'package:zapping_flutter/data/repository/model/my_article.dart';
+import 'package:zapping_flutter/di/di.dart';
 
 @LazySingleton(as: ZappingRepository)
 final class ZappingRepositoryImpl implements ZappingRepository {
-  late final _http = HttpWithMiddleware.build(
-      middlewares: [HttpLogger(logLevel: LogLevel.BODY)]);
+  // todo abstract this to facilitate testing
+  final HttpWithMiddleware _http;
 
-  // todo handle exceptions
+  ZappingRepositoryImpl({HttpWithMiddleware? http})
+      : _http = http ?? getIt<HttpWithMiddleware>();
+
+// todo test
   @override
   Future<GetArticlesResult> getArticles(String url) async {
     try {
@@ -21,6 +25,7 @@ final class ZappingRepositoryImpl implements ZappingRepository {
           await _http.get(Uri.parse(url), headers: {"user-agent": ""});
 
       // this can throw ArgumentError
+      // todo this should be abstracted and injected to facilitate changing the implementation and testing
       final rssFeed = RssFeed.parse(response.body);
 
       final rssItems = rssFeed.items.where((item) {
