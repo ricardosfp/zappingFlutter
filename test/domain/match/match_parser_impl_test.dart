@@ -13,16 +13,21 @@ void main() {
   const validArticleChannel = "SportTv1";
   const validArticleTitle =
       "$validArticleHomeTeam x $validArticleAwayTeam - 14/05 23:00 - $validArticleChannel";
-  const validArticle = MyArticle(validArticleDateString, validArticleTitle);
+  const validArticle =
+      MyArticle(title: validArticleTitle, date: validArticleDateString);
 
   // invalid articles
-  const invalidArticleInvalidDate = MyArticle("14 May 24", validArticleTitle);
+  const invalidArticleInvalidDate =
+      MyArticle(title: validArticleTitle, date: "14 May 24");
   const invalidArticleInvalidHomeTeam = MyArticle(
-      validArticleDateString, " x Atlético Mineiro - 14/05 23:00 - SportTv1");
-  const invalidArticleInvalidAwayTeam =
-      MyArticle(validArticleDateString, "Peñarol x  - 14/05 23:00 - SportTv1");
+      title: " x Atlético Mineiro - 14/05 23:00 - SportTv1",
+      date: validArticleDateString);
+  const invalidArticleInvalidAwayTeam = MyArticle(
+      title: "Peñarol x  - 14/05 23:00 - SportTv1",
+      date: validArticleDateString);
   const invalidArticleInvalidChannel = MyArticle(
-      validArticleDateString, "Peñarol x Atlético Mineiro - 14/05 23:00 - ");
+      title: "Peñarol x Atlético Mineiro - 14/05 23:00 - ",
+      date: validArticleDateString);
 
   setUp(() {
     matchParser = MatchParserImpl();

@@ -11,21 +11,20 @@ class GetArticlesSuccess implements GetArticlesResult {
 
 sealed class GetArticlesError extends GetArticlesResult {}
 
-class GetArticlesHttpError implements GetArticlesError {
+final class GetArticlesHttpError implements GetArticlesError {
   // todo this exception is implementation dependent, create your own independent classes
   final ClientException exception;
 
   GetArticlesHttpError(this.exception);
 }
 
-// todo this is implementation dependent, find another way
-class GetArticlesParseError implements GetArticlesError {
-  final ArgumentError exception;
+final class GetArticlesParseError implements GetArticlesError {
+  final Exception exception;
 
   GetArticlesParseError(this.exception);
 }
 
-class GetArticlesOtherExceptionError implements GetArticlesError {
+final class GetArticlesOtherExceptionError implements GetArticlesError {
   final Exception exception;
 
   GetArticlesOtherExceptionError(this.exception);

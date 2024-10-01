@@ -1,6 +1,6 @@
-class MyArticle {
-  final String date;
+final class MyArticle {
   final String title;
+  final String date;
 
-  const MyArticle(this.date, this.title);
+  const MyArticle({required this.title, required this.date});
 }

@@ -3,8 +3,9 @@ import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
-import 'package:zapping_flutter/data/repository/contract/get_articles_result.dart';
 import 'package:zapping_flutter/data/repository/implementation/zapping_repository_impl.dart';
+import 'package:zapping_flutter/data/repository/model/get_articles_result.dart';
+import 'package:zapping_flutter/di/di.dart';
 
 import 'zapping_repository_impl_test.mocks.dart';
 
@@ -12,9 +13,9 @@ import 'zapping_repository_impl_test.mocks.dart';
 void main() {
   late ZappingRepositoryImpl zappingRepository;
 
-  // setUp(() {
-  //   zappingRepository = ZappingRepositoryImpl();
-  // });
+  setUpAll(() {
+    configureDependencies();
+  });
 
   test("ClientException in the http client returns GetArticlesHttpError",
       () async {
