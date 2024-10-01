@@ -2,8 +2,8 @@ import 'dart:collection';
 
 import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
-import 'package:zapping_flutter/data/repository/contract/get_articles_result.dart';
 import 'package:zapping_flutter/data/repository/contract/zapping_repository.dart';
+import 'package:zapping_flutter/data/repository/model/get_articles_result.dart';
 import 'package:zapping_flutter/di/di.dart';
 import 'package:zapping_flutter/domain/match/match_parse_result.dart';
 import 'package:zapping_flutter/domain/match/match_parser.dart';
@@ -94,14 +94,14 @@ class ZappingProvider extends ChangeNotifier {
 // this can be made generic
 sealed class UiState {}
 
-class UiDataReady implements UiState {
+final class UiDataReady implements UiState {
   // this one should be unmodifiable
   final Map<DateTime, List<MyMatch>> dayMap;
 
   UiDataReady(this.dayMap);
 }
 
-class UiLoading implements UiState {
+final class UiLoading implements UiState {
   static final UiLoading _instance = UiLoading._();
 
   UiLoading._();
@@ -109,7 +109,7 @@ class UiLoading implements UiState {
   factory UiLoading() => _instance;
 }
 
-class UiError implements UiState {
+final class UiError implements UiState {
   static final UiError _instance = UiError._();
 
   UiError._();
