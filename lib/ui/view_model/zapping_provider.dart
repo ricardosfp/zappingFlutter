@@ -98,6 +98,7 @@ final class UiDataReady implements UiState {
   // this one should be unmodifiable
   final Map<DateTime, List<MyMatch>> dayMap;
 
+  // todo maybe this constructor should make the Map unmodifiable instead of relying on the code that invokes the constructor
   UiDataReady(this.dayMap);
 }
 
