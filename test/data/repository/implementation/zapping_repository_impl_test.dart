@@ -2,14 +2,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:pretty_http_logger/pretty_http_logger.dart';
+import 'package:zapping_flutter/data/repository/contract/my_http_client.dart';
 import 'package:zapping_flutter/data/repository/implementation/zapping_repository_impl.dart';
 import 'package:zapping_flutter/data/repository/model/get_articles_result.dart';
 import 'package:zapping_flutter/di/di.dart';
 
 import 'zapping_repository_impl_test.mocks.dart';
 
-@GenerateMocks([HttpWithMiddleware])
+@GenerateMocks([MyHttpClient])
 void main() {
   late ZappingRepositoryImpl zappingRepository;
 
@@ -19,7 +19,7 @@ void main() {
 
   test("ClientException in the http client returns GetArticlesHttpError",
       () async {
-    final mockHttp = MockHttpWithMiddleware();
+    final mockHttp = MockMyHttpClient();
 
     when(mockHttp.get(any, headers: anyNamed("headers")))
         .thenThrow(ClientException(""));

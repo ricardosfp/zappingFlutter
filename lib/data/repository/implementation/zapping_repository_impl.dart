@@ -1,6 +1,6 @@
 import 'package:http/http.dart';
 import 'package:injectable/injectable.dart';
-import 'package:pretty_http_logger/pretty_http_logger.dart';
+import 'package:zapping_flutter/data/repository/contract/my_http_client.dart';
 import 'package:zapping_flutter/data/repository/contract/rss_parser.dart';
 import 'package:zapping_flutter/data/repository/contract/zapping_repository.dart';
 import 'package:zapping_flutter/data/repository/model/get_articles_result.dart';
@@ -10,12 +10,11 @@ import 'package:zapping_flutter/di/di.dart';
 
 @LazySingleton(as: ZappingRepository)
 final class ZappingRepositoryImpl implements ZappingRepository {
-  // todo abstract this to facilitate testing
-  final HttpWithMiddleware _http;
+  final MyHttpClient _http;
   final RssParser _rssParser;
 
-  ZappingRepositoryImpl({HttpWithMiddleware? http, RssParser? rssParser})
-      : _http = http ?? getIt<HttpWithMiddleware>(),
+  ZappingRepositoryImpl({MyHttpClient? http, RssParser? rssParser})
+      : _http = http ?? getIt<MyHttpClient>(),
         _rssParser = rssParser ?? getIt<RssParser>();
 
 // todo test
@@ -24,8 +23,7 @@ final class ZappingRepositoryImpl implements ZappingRepository {
     try {
       // I am using http because dio was not correctly decoding accents
       // the user-agent part is because the website was giving us error 429 with the default user-agent
-      final response =
-          await _http.get(Uri.parse(url), headers: {"user-agent": ""});
+      final response = await _http.get(url, headers: {"user-agent": ""});
 
       final rssParseResult = _rssParser.parse(response.body);
 
