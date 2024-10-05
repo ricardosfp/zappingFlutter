@@ -4,6 +4,7 @@ import 'package:zapping_flutter/data/repository/contract/rss_parser.dart';
 import 'package:zapping_flutter/data/repository/model/my_rss_item.dart';
 import 'package:zapping_flutter/data/repository/model/rss_parse_result.dart';
 
+// todo test the rss parser
 @LazySingleton(as: RssParser)
 final class RssParserImpl implements RssParser {
   @override
