@@ -6,6 +6,7 @@ import 'package:zapping_flutter/di/di.dart';
 
 @LazySingleton(as: MyHttpClient)
 final class HttpClientImpl implements MyHttpClient {
+  // I am using http because dio was not correctly decoding accents
   late final _http = getIt<HttpWithMiddleware>();
 
   @override

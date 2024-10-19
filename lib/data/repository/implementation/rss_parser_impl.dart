@@ -16,9 +16,9 @@ final class RssParserImpl implements RssParser {
         return rssItem.title != null && rssItem.pubDate != null;
       }).map((rssItem) {
         return MyRssItem(title: rssItem.title!, pubDate: rssItem.pubDate!);
-      });
+      }).toList();
 
-      return RssParseSuccess(List.unmodifiable(myRssItems));
+      return RssParseSuccess(myRssItems);
     } on Exception catch (ex) {
       return RssParseException(ex);
     }
