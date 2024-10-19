@@ -26,6 +26,8 @@ class ZappingProvider extends ChangeNotifier {
         _dateUtils = dateUtils ?? getIt<DateUtils>();
 
   late final LinkedHashMap<DateTime, List<MyMatch>> _dayMap = LinkedHashMap();
+
+  // maybe it should be idle
   UiState _uiState = UiLoading();
 
   UiState get uiState => _uiState;

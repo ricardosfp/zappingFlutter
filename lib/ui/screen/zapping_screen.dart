@@ -34,17 +34,13 @@ class _ZappingScreenState extends State<ZappingScreen> {
           // todo check switch as expression
           switch (uiState) {
             case UiDataReady():
-              final tabs = uiState.dayMap.keys.map(
-                (matchDay) {
-                  return Tab(text: _tabDateFormat.format(matchDay));
-                },
-              ).toList();
+              final tabs = uiState.dayMap.keys.map((matchDay) {
+                return Tab(text: _tabDateFormat.format(matchDay));
+              }).toList();
 
-              final zappingDays = uiState.dayMap.values.map(
-                (matchList) {
-                  return ZappingDay(matches: matchList);
-                },
-              ).toList();
+              final zappingDays = uiState.dayMap.values.map((matchList) {
+                return ZappingDay(matches: matchList);
+              }).toList();
 
               return DefaultTabController(
                 length: uiState.dayMap.length,
@@ -65,21 +61,38 @@ class _ZappingScreenState extends State<ZappingScreen> {
                 ),
               );
             case UiLoading():
-              // TODO: Handle this case.
               return Scaffold(
                 appBar: AppBar(
                   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                   title: const Text("Zapping"),
+                ),
+                body: Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    width: MediaQuery.sizeOf(context).width * 0.25,
+                    height: MediaQuery.sizeOf(context).width * 0.25,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 8,
+                    ),
+                  ),
                 ),
               );
             case UiError():
-              // TODO: Handle this case.
               return Scaffold(
-                appBar: AppBar(
-                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                  title: const Text("Zapping"),
-                ),
-              );
+                  appBar: AppBar(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.inversePrimary,
+                    title: const Text("Zapping"),
+                  ),
+                  body: Align(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      child: Text(
+                        "Could not load data, try again later",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ));
           }
         },
       ),
