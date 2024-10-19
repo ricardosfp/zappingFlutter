@@ -21,7 +21,6 @@ final class ZappingRepositoryImpl implements ZappingRepository {
   @override
   Future<GetArticlesResult> getArticles(String url) async {
     try {
-      // I am using http because dio was not correctly decoding accents
       // the user-agent part is because the website was giving us error 429 with the default user-agent
       final response = await _http.get(url, headers: {"user-agent": ""});
 
@@ -29,11 +28,11 @@ final class ZappingRepositoryImpl implements ZappingRepository {
 
       switch (rssParseResult) {
         case RssParseSuccess():
-          return GetArticlesSuccess(List.unmodifiable(
+          return GetArticlesSuccess(
             rssParseResult.items.map((item) {
               return MyArticle(title: item.title, date: item.pubDate);
-            }),
-          ));
+            }).toList(),
+          );
         case RssParseException():
           return GetArticlesParseError(rssParseResult.exception);
       }

@@ -68,14 +68,7 @@ class ZappingProvider extends ChangeNotifier {
           }).add(match);
         }
 
-        // make the lists unmodifiable
-        for (final key in _dayMap.keys) {
-          _dayMap.update(key, (value) {
-            return List.unmodifiable(value);
-          });
-        }
-
-        _uiState = UiDataReady(Map.unmodifiable(_dayMap));
+        _uiState = UiDataReady(_dayMap);
         notifyListeners();
 
       case GetArticlesHttpError():
@@ -95,11 +88,23 @@ class ZappingProvider extends ChangeNotifier {
 sealed class UiState {}
 
 final class UiDataReady implements UiState {
-  // this one should be unmodifiable
+  // unmodifiable map made up of unmodifiable lists
   final Map<DateTime, List<MyMatch>> dayMap;
 
-  // todo maybe this constructor should make the Map unmodifiable instead of relying on the code that invokes the constructor
-  UiDataReady(this.dayMap);
+  UiDataReady(LinkedHashMap<DateTime, List<MyMatch>> dayMapParameter)
+      : dayMap = _initializeMap(dayMapParameter);
+
+  static Map<DateTime, List<MyMatch>> _initializeMap(
+      LinkedHashMap<DateTime, List<MyMatch>> map) {
+    // make the lists unmodifiable
+    for (final key in map.keys) {
+      map.update(key, (value) {
+        return List.unmodifiable(value);
+      });
+    }
+
+    return Map.unmodifiable(map);
+  }
 }
 
 final class UiLoading implements UiState {

@@ -5,7 +5,8 @@ sealed class RssParseResult {}
 final class RssParseSuccess implements RssParseResult {
   final List<MyRssItem> items;
 
-  RssParseSuccess(this.items);
+  RssParseSuccess(List<MyRssItem> itemsParameter)
+      : items = List.unmodifiable(itemsParameter);
 }
 
 sealed class RssParseError extends RssParseResult {}

@@ -6,7 +6,8 @@ sealed class GetArticlesResult {}
 class GetArticlesSuccess implements GetArticlesResult {
   final List<MyArticle> articles;
 
-  GetArticlesSuccess(this.articles);
+  GetArticlesSuccess(List<MyArticle> articlesParameter)
+      : articles = List.unmodifiable(articlesParameter);
 }
 
 sealed class GetArticlesError extends GetArticlesResult {}
