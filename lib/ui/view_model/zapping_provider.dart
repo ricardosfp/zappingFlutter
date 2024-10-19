@@ -32,9 +32,9 @@ class ZappingProvider extends ChangeNotifier {
 
   UiState get uiState => _uiState;
 
-  // todo manage states
   void getMatches() async {
     _uiState = UiLoading();
+    notifyListeners();
 
     final getArticlesResult = await _zappingRepository.getArticles(zappingUrl);
 
