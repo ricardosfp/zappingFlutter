@@ -48,7 +48,8 @@ class _ZappingScreenState extends State<ZappingScreen> {
                   appBar: AppBar(
                     backgroundColor:
                         Theme.of(context).colorScheme.inversePrimary,
-                    title: const Text("Zapping"),
+                    title: _provideAppBarTitle(),
+                    actions: _provideAppBarActions(),
                     bottom: TabBar(
                       tabAlignment: TabAlignment.center,
                       tabs: tabs,
@@ -64,7 +65,8 @@ class _ZappingScreenState extends State<ZappingScreen> {
               return Scaffold(
                 appBar: AppBar(
                   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                  title: const Text("Zapping"),
+                  title: _provideAppBarTitle(),
+                  actions: _provideAppBarActions(),
                 ),
                 body: Align(
                   alignment: Alignment.center,
@@ -82,7 +84,8 @@ class _ZappingScreenState extends State<ZappingScreen> {
                   appBar: AppBar(
                     backgroundColor:
                         Theme.of(context).colorScheme.inversePrimary,
-                    title: const Text("Zapping"),
+                    title: _provideAppBarTitle(),
+                    actions: _provideAppBarActions(),
                   ),
                   body: Align(
                     alignment: Alignment.center,
@@ -97,5 +100,28 @@ class _ZappingScreenState extends State<ZappingScreen> {
         },
       ),
     );
+  }
+
+  static Text _provideAppBarTitle() {
+    return const Text(
+      "Zapping",
+      style: TextStyle(
+        color: Colors.black,
+        fontSize: 22,
+      ),
+    );
+  }
+
+  List<Widget> _provideAppBarActions() {
+    return [
+      IconButton(
+          icon: Icon(
+            Icons.refresh,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            _zappingProvider.getMatches();
+          })
+    ];
   }
 }
