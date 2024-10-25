@@ -3,7 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:zapping_flutter/di/di.dart';
 import 'package:zapping_flutter/domain/model/my_match.dart';
-import 'package:zapping_flutter/ui/view_model/zapping_provider.dart';
+import 'package:zapping_flutter/ui/view_model/zapping/model/filter_result.dart';
+import 'package:zapping_flutter/ui/view_model/zapping/model/ui_state.dart';
+import 'package:zapping_flutter/ui/view_model/zapping/zapping_provider.dart';
 import 'package:zapping_flutter/ui/widget/zapping_day.dart';
 
 class ZappingScreen extends StatefulWidget {
@@ -45,38 +47,17 @@ class _ZappingScreenState extends State<ZappingScreen> {
         builder: (context, zappingProvider, Widget? child) {
           final uiState = zappingProvider.uiState;
 
-          // todo check switch as expression
           switch (uiState) {
             case UiDataReady():
-              // todo this part of the code has some small problems. For example, finalMap can be reassigned. The filtering part
-              //  should be done in a separate component
-              late Map<DateTime, List<MyMatch>> finalMap;
+              late final Map<DateTime, List<MyMatch>> finalMap;
 
               if (_searchMode && _controller.text.isNotEmpty) {
-                finalMap = {};
+                final filterResult = _zappingProvider.filterList(_controller.text);
 
-                // traverse the original map
-                uiState.dayMap.forEach((date, matchList) {
-                  // filter the list items that obey the selection criteria
-                  final finalMatchList = matchList.where((myMatch) {
-                    final lowerCaseQuery = _controller.text.toLowerCase();
-                    // either home team
-                    final homeTeamContainsQuery = myMatch.homeTeam.toLowerCase().contains(lowerCaseQuery);
-                    // or away team
-                    final awayTeamContainsQuery = myMatch.awayTeam.toLowerCase().contains(lowerCaseQuery);
-                    // or channel contain the query string
-                    final channelContainsQuery = myMatch.channel.toLowerCase().contains(lowerCaseQuery);
-
-                    return homeTeamContainsQuery || awayTeamContainsQuery || channelContainsQuery;
-                  });
-
-                  // only add this list with this DateTime if the list is not empty
-                  if (finalMatchList.isNotEmpty) {
-                    finalMap[date] = List.unmodifiable(finalMatchList);
-                  }
-                });
-
-                finalMap = Map.unmodifiable(finalMap);
+                finalMap = switch (filterResult) {
+                  FilterSuccess() => filterResult.filteredMap,
+                  _ => uiState.dayMap,
+                };
               } else {
                 finalMap = uiState.dayMap;
               }
@@ -147,6 +128,7 @@ class _ZappingScreenState extends State<ZappingScreen> {
     );
   }
 
+  // todo test this and the function below in widget tests
   Widget _provideAppBarTitle(UiState uiState) {
     return _searchMode && uiState is UiDataReady
         ? TextField(
