@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zapping_flutter/data/repository/contract/zapping_repository.dart';
@@ -104,13 +105,13 @@ class ZappingProvider extends ChangeNotifier {
           uiStateLocal.dayMap.forEach((date, matchList) {
             // filter the list items that obey the selection criteria
             final finalMatchList = matchList.where((myMatch) {
-              final lowerCaseQuery = textToFilter.toLowerCase();
+              final lowerCaseQuery = removeDiacritics(textToFilter.toLowerCase());
               // either home team
-              final homeTeamContainsQuery = myMatch.homeTeam.toLowerCase().contains(lowerCaseQuery);
+              final homeTeamContainsQuery = removeDiacritics(myMatch.homeTeam.toLowerCase()).contains(lowerCaseQuery);
               // or away team
-              final awayTeamContainsQuery = myMatch.awayTeam.toLowerCase().contains(lowerCaseQuery);
+              final awayTeamContainsQuery = removeDiacritics(myMatch.awayTeam.toLowerCase()).contains(lowerCaseQuery);
               // or channel contain the query string
-              final channelContainsQuery = myMatch.channel.toLowerCase().contains(lowerCaseQuery);
+              final channelContainsQuery = removeDiacritics(myMatch.channel.toLowerCase()).contains(lowerCaseQuery);
 
               return homeTeamContainsQuery || awayTeamContainsQuery || channelContainsQuery;
             });

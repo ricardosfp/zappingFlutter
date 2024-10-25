@@ -51,6 +51,9 @@ dependencies:
 
   injectable: ^2.5.0
 
+  # to remove diacritics from a string, for string comparison
+  diacritic: 0.1.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
