@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:zapping_flutter/di/di.dart';
-import 'package:zapping_flutter/ui/view_model/zapping_provider.dart';
+import 'package:zapping_flutter/domain/model/my_match.dart';
+import 'package:zapping_flutter/ui/view_model/zapping/model/filter_result.dart';
+import 'package:zapping_flutter/ui/view_model/zapping/model/ui_state.dart';
+import 'package:zapping_flutter/ui/view_model/zapping/zapping_provider.dart';
 import 'package:zapping_flutter/ui/widget/zapping_day.dart';
 
 class ZappingScreen extends StatefulWidget {
@@ -14,13 +17,26 @@ class ZappingScreen extends StatefulWidget {
 
 class _ZappingScreenState extends State<ZappingScreen> {
   late final _zappingProvider = getIt<ZappingProvider>();
-
+  late final _controller = TextEditingController();
   static final _tabDateFormat = DateFormat("EEEE d");
+
+  bool _searchMode = false;
 
   @override
   void initState() {
     super.initState();
     _zappingProvider.getMatches();
+    _controller.addListener(
+      () {
+        setState(() {});
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 
   @override
@@ -31,25 +47,36 @@ class _ZappingScreenState extends State<ZappingScreen> {
         builder: (context, zappingProvider, Widget? child) {
           final uiState = zappingProvider.uiState;
 
-          // todo check switch as expression
           switch (uiState) {
             case UiDataReady():
-              final tabs = uiState.dayMap.keys.map((matchDay) {
+              late final Map<DateTime, List<MyMatch>> finalMap;
+
+              if (_searchMode && _controller.text.isNotEmpty) {
+                final filterResult = _zappingProvider.filterList(_controller.text);
+
+                finalMap = switch (filterResult) {
+                  FilterSuccess() => filterResult.filteredMap,
+                  _ => uiState.dayMap,
+                };
+              } else {
+                finalMap = uiState.dayMap;
+              }
+
+              final tabs = finalMap.keys.map((matchDay) {
                 return Tab(text: _tabDateFormat.format(matchDay));
               }).toList();
 
-              final zappingDays = uiState.dayMap.values.map((matchList) {
+              final zappingDays = finalMap.values.map((matchList) {
                 return ZappingDay(matches: matchList);
               }).toList();
 
               return DefaultTabController(
-                length: uiState.dayMap.length,
+                length: finalMap.length,
                 child: Scaffold(
                   appBar: AppBar(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.inversePrimary,
-                    title: _provideAppBarTitle(),
-                    actions: _provideAppBarActions(),
+                    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                    title: _provideAppBarTitle(uiState),
+                    actions: _provideAppBarActions(uiState),
                     bottom: TabBar(
                       tabAlignment: TabAlignment.center,
                       tabs: tabs,
@@ -65,8 +92,8 @@ class _ZappingScreenState extends State<ZappingScreen> {
               return Scaffold(
                 appBar: AppBar(
                   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                  title: _provideAppBarTitle(),
-                  actions: _provideAppBarActions(),
+                  title: _provideAppBarTitle(uiState),
+                  actions: _provideAppBarActions(uiState),
                 ),
                 body: Align(
                   alignment: Alignment.center,
@@ -82,10 +109,9 @@ class _ZappingScreenState extends State<ZappingScreen> {
             case UiError():
               return Scaffold(
                   appBar: AppBar(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.inversePrimary,
-                    title: _provideAppBarTitle(),
-                    actions: _provideAppBarActions(),
+                    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                    title: _provideAppBarTitle(uiState),
+                    actions: _provideAppBarActions(uiState),
                   ),
                   body: Align(
                     alignment: Alignment.center,
@@ -102,26 +128,75 @@ class _ZappingScreenState extends State<ZappingScreen> {
     );
   }
 
-  static Text _provideAppBarTitle() {
-    return const Text(
-      "Zapping",
-      style: TextStyle(
-        color: Colors.black,
-        fontSize: 22,
-      ),
-    );
+  // todo test this and the function below in widget tests
+  Widget _provideAppBarTitle(UiState uiState) {
+    return _searchMode && uiState is UiDataReady
+        ? TextField(
+            controller: _controller,
+            autofocus: true,
+            // to show letters and numbers
+            keyboardType: TextInputType.visiblePassword,
+            textInputAction: TextInputAction.search,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 22,
+            ),
+          )
+        : const Text(
+            "Zapping",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 22,
+            ),
+          );
   }
 
-  List<Widget> _provideAppBarActions() {
+  // only show search icon and allow search mode when the data is ready
+  // todo what happens if I close the search bar and open it again? Does it still show the same text?
+  List<Widget> _provideAppBarActions(UiState uiState) {
     return [
-      IconButton(
-          icon: Icon(
-            Icons.refresh,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            _zappingProvider.getMatches();
-          })
+      if (_searchMode && uiState is UiDataReady) ...[
+        IconButton(
+            icon: Icon(
+              Icons.clear,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              setState(() {
+                _searchMode = false;
+              });
+            })
+      ],
+      if (!_searchMode && uiState is UiDataReady) ...[
+        IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              setState(() {
+                _searchMode = true;
+              });
+            })
+      ],
+      () {
+        final enableRefreshButton = _enableRefreshButton(uiState);
+
+        return IconButton(
+            icon: Icon(
+              Icons.refresh,
+              color: enableRefreshButton ? Colors.black : Colors.black45,
+            ),
+            onPressed: () {
+              if (enableRefreshButton) {
+                _zappingProvider.getMatches();
+              }
+            });
+      }(),
     ];
+  }
+
+  bool _enableRefreshButton(UiState uiState) {
+    return !_searchMode && uiState is UiDataReady;
   }
 }

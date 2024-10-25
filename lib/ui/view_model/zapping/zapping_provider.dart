@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zapping_flutter/data/repository/contract/zapping_repository.dart';
@@ -10,6 +11,8 @@ import 'package:zapping_flutter/domain/match/match_parser.dart';
 import 'package:zapping_flutter/domain/model/my_match.dart';
 import 'package:zapping_flutter/infrastructure/date_utils.dart';
 import 'package:zapping_flutter/main.dart';
+import 'package:zapping_flutter/ui/view_model/zapping/model/filter_result.dart';
+import 'package:zapping_flutter/ui/view_model/zapping/model/ui_state.dart';
 
 @lazySingleton
 class ZappingProvider extends ChangeNotifier {
@@ -17,10 +20,7 @@ class ZappingProvider extends ChangeNotifier {
   final MatchParser _matchParser;
   final DateUtils _dateUtils;
 
-  ZappingProvider(
-      {ZappingRepository? zappingRepository,
-      MatchParser? matchParser,
-      DateUtils? dateUtils})
+  ZappingProvider({ZappingRepository? zappingRepository, MatchParser? matchParser, DateUtils? dateUtils})
       : _zappingRepository = zappingRepository ?? getIt<ZappingRepository>(),
         _matchParser = matchParser ?? getIt<MatchParser>(),
         _dateUtils = dateUtils ?? getIt<DateUtils>();
@@ -32,6 +32,7 @@ class ZappingProvider extends ChangeNotifier {
 
   UiState get uiState => _uiState;
 
+  // todo test
   void getMatches() async {
     _uiState = UiLoading();
     notifyListeners();
@@ -42,6 +43,7 @@ class ZappingProvider extends ChangeNotifier {
       case GetArticlesSuccess():
         // todo this should be done in a future Use Case, not here, to avoid calling the repository,
         //  getting a response and then calling the domain layer
+        // how is this part mocked in a test? it is only possible if this is put into another function
         final matches = getArticlesResult.articles
             .map((article) {
               final matchParseResult = _matchParser.parse(article);
@@ -84,43 +86,48 @@ class ZappingProvider extends ChangeNotifier {
         notifyListeners();
     }
   }
-}
 
-// this can be made generic
-sealed class UiState {}
+  // this function HAS TO return an unmodifiable map, made up from unmodifiable list values
+  // there are two results possible. If the state is incorrect return error, if it is correct then do the calculations
+  // todo test
+  FilterResult filterList(String textToFilter) {
+    final uiStateLocal = _uiState;
 
-final class UiDataReady implements UiState {
-  // unmodifiable map made up of unmodifiable lists
-  final Map<DateTime, List<MyMatch>> dayMap;
+    // I am using a switch because I want automatic casting of UiState
+    switch (uiStateLocal) {
+      case UiDataReady():
+        late LinkedHashMap<DateTime, List<MyMatch>> finalMap;
 
-  UiDataReady(LinkedHashMap<DateTime, List<MyMatch>> dayMapParameter)
-      : dayMap = _initializeMap(dayMapParameter);
+        if (textToFilter.isNotEmpty) {
+          finalMap = LinkedHashMap();
 
-  static Map<DateTime, List<MyMatch>> _initializeMap(
-      LinkedHashMap<DateTime, List<MyMatch>> map) {
-    // make the lists unmodifiable
-    for (final key in map.keys) {
-      map.update(key, (value) {
-        return List.unmodifiable(value);
-      });
+          // traverse the original map
+          uiStateLocal.dayMap.forEach((date, matchList) {
+            // filter the list items that obey the selection criteria
+            final finalMatchList = matchList.where((myMatch) {
+              final lowerCaseQuery = removeDiacritics(textToFilter.toLowerCase());
+              // either home team
+              final homeTeamContainsQuery = removeDiacritics(myMatch.homeTeam.toLowerCase()).contains(lowerCaseQuery);
+              // or away team
+              final awayTeamContainsQuery = removeDiacritics(myMatch.awayTeam.toLowerCase()).contains(lowerCaseQuery);
+              // or channel contain the query string
+              final channelContainsQuery = removeDiacritics(myMatch.channel.toLowerCase()).contains(lowerCaseQuery);
+
+              return homeTeamContainsQuery || awayTeamContainsQuery || channelContainsQuery;
+            });
+
+            // only add this list with this DateTime if the list is not empty
+            if (finalMatchList.isNotEmpty) {
+              finalMap[date] = finalMatchList.toList();
+            }
+          });
+
+          return FilterSuccess(finalMap);
+        } else {
+          return FilterSuccess(uiStateLocal.dayMap);
+        }
+      default:
+        return FilterError();
     }
-
-    return Map.unmodifiable(map);
   }
-}
-
-final class UiLoading implements UiState {
-  static final UiLoading _instance = UiLoading._();
-
-  UiLoading._();
-
-  factory UiLoading() => _instance;
-}
-
-final class UiError implements UiState {
-  static final UiError _instance = UiError._();
-
-  UiError._();
-
-  factory UiError() => _instance;
 }
