@@ -5,6 +5,22 @@ import 'package:zapping_flutter/domain/model/my_match.dart';
 
 sealed class UiState {}
 
+final class UiIdle implements UiState {
+  static final UiIdle _instance = UiIdle._();
+
+  UiIdle._();
+
+  factory UiIdle() => _instance;
+}
+
+final class UiLoading implements UiState {
+  static final UiLoading _instance = UiLoading._();
+
+  UiLoading._();
+
+  factory UiLoading() => _instance;
+}
+
 final class UiDataReady implements UiState {
   // unmodifiable map made up of unmodifiable lists
   final Map<DateTime, List<MyMatch>> dayMap;
@@ -21,14 +37,6 @@ final class UiDataReady implements UiState {
 
     return Map.unmodifiable(map);
   }
-}
-
-final class UiLoading implements UiState {
-  static final UiLoading _instance = UiLoading._();
-
-  UiLoading._();
-
-  factory UiLoading() => _instance;
 }
 
 final class UiError implements UiState {
