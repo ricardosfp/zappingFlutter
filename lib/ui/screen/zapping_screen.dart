@@ -48,6 +48,25 @@ class _ZappingScreenState extends State<ZappingScreen> {
           final uiState = zappingProvider.uiState;
 
           switch (uiState) {
+            case UiIdle():
+            case UiLoading():
+              return Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  title: _provideAppBarTitle(uiState),
+                  actions: _provideAppBarActions(uiState),
+                ),
+                body: Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    width: MediaQuery.sizeOf(context).width * 0.25,
+                    height: MediaQuery.sizeOf(context).width * 0.25,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 8,
+                    ),
+                  ),
+                ),
+              );
             case UiDataReady():
               late final Map<DateTime, List<MyMatch>> finalMap;
 
@@ -85,24 +104,6 @@ class _ZappingScreenState extends State<ZappingScreen> {
                   ),
                   body: TabBarView(
                     children: zappingDays,
-                  ),
-                ),
-              );
-            case UiLoading():
-              return Scaffold(
-                appBar: AppBar(
-                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                  title: _provideAppBarTitle(uiState),
-                  actions: _provideAppBarActions(uiState),
-                ),
-                body: Align(
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.25,
-                    height: MediaQuery.sizeOf(context).width * 0.25,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 8,
-                    ),
                   ),
                 ),
               );

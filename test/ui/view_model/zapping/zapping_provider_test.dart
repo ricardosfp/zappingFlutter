@@ -15,6 +15,6 @@ void main() {
   });
 
   test("check initial values", () {
-    expect(zappingProvider.uiState, isA<UiLoading>());
+    expect(zappingProvider.uiState, UiIdle());
   });
 }
