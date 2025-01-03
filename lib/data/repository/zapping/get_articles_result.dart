@@ -1,5 +1,5 @@
 import 'package:http/http.dart';
-import 'package:zapping_flutter/data/repository/model/my_article.dart';
+import 'package:zapping_flutter/data/repository/zapping/my_article.dart';
 
 sealed class GetArticlesResult {}
 

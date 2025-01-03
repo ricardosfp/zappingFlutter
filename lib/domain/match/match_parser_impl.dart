@@ -1,9 +1,9 @@
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
-import 'package:zapping_flutter/data/repository/model/my_article.dart';
-import 'package:zapping_flutter/domain/match/match_parse_result.dart';
+import 'package:zapping_flutter/data/repository/zapping/my_article.dart';
 import 'package:zapping_flutter/domain/match/match_parser.dart';
-import 'package:zapping_flutter/domain/model/my_match.dart';
+import 'package:zapping_flutter/domain/match/model/match_parse_result.dart';
+import 'package:zapping_flutter/domain/match/model/my_match.dart';
 
 @LazySingleton(as: MatchParser)
 final class MatchParserImpl implements MatchParser {
@@ -26,8 +26,7 @@ final class MatchParserImpl implements MatchParser {
           if (homeTeam.isEmpty || awayTeam.isEmpty || channel.isEmpty) {
             return MatchParseTitleError();
           } else {
-            return MatchParseSuccess(
-                MyMatch(homeTeam, awayTeam, date, channel, originalText));
+            return MatchParseSuccess(MyMatch(homeTeam, awayTeam, date, channel, originalText));
           }
         } else {
           return MatchParseTitleError();

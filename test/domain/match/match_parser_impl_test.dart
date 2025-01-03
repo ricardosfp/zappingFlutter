@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
-import 'package:zapping_flutter/data/repository/model/my_article.dart';
-import 'package:zapping_flutter/domain/match/match_parse_result.dart';
+import 'package:zapping_flutter/data/repository/zapping/my_article.dart';
 import 'package:zapping_flutter/domain/match/match_parser_impl.dart';
+import 'package:zapping_flutter/domain/match/model/match_parse_result.dart';
 
 void main() {
   late MatchParserImpl matchParser;
@@ -11,23 +11,17 @@ void main() {
   const validArticleHomeTeam = "Peñarol";
   const validArticleAwayTeam = "Atlético Mineiro";
   const validArticleChannel = "SportTv1";
-  const validArticleTitle =
-      "$validArticleHomeTeam x $validArticleAwayTeam - 14/05 23:00 - $validArticleChannel";
-  const validArticle =
-      MyArticle(title: validArticleTitle, date: validArticleDateString);
+  const validArticleTitle = "$validArticleHomeTeam x $validArticleAwayTeam - 14/05 23:00 - $validArticleChannel";
+  const validArticle = MyArticle(title: validArticleTitle, date: validArticleDateString);
 
   // invalid articles
-  const invalidArticleInvalidDate =
-      MyArticle(title: validArticleTitle, date: "14 May 24");
-  const invalidArticleInvalidHomeTeam = MyArticle(
-      title: " x Atlético Mineiro - 14/05 23:00 - SportTv1",
-      date: validArticleDateString);
-  const invalidArticleInvalidAwayTeam = MyArticle(
-      title: "Peñarol x  - 14/05 23:00 - SportTv1",
-      date: validArticleDateString);
-  const invalidArticleInvalidChannel = MyArticle(
-      title: "Peñarol x Atlético Mineiro - 14/05 23:00 - ",
-      date: validArticleDateString);
+  const invalidArticleInvalidDate = MyArticle(title: validArticleTitle, date: "14 May 24");
+  const invalidArticleInvalidHomeTeam =
+      MyArticle(title: " x Atlético Mineiro - 14/05 23:00 - SportTv1", date: validArticleDateString);
+  const invalidArticleInvalidAwayTeam =
+      MyArticle(title: "Peñarol x  - 14/05 23:00 - SportTv1", date: validArticleDateString);
+  const invalidArticleInvalidChannel =
+      MyArticle(title: "Peñarol x Atlético Mineiro - 14/05 23:00 - ", date: validArticleDateString);
 
   setUp(() {
     matchParser = MatchParserImpl();

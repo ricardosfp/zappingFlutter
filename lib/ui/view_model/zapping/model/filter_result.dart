@@ -1,4 +1,4 @@
-import 'package:zapping_flutter/domain/model/my_match.dart';
+import 'package:zapping_flutter/domain/match/model/my_match.dart';
 
 sealed class FilterResult {}
 
