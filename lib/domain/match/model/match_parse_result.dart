@@ -1,18 +1,12 @@
-import 'package:zapping_flutter/domain/model/my_match.dart';
+import 'package:zapping_flutter/domain/match/model/my_match.dart';
 
 sealed class MatchParseResult {}
-
-//region success
 
 class MatchParseSuccess implements MatchParseResult {
   final MyMatch match;
 
   MatchParseSuccess(this.match);
 }
-
-//endregion success
-
-//region error
 
 sealed class MatchParseError extends MatchParseResult {}
 
@@ -29,7 +23,3 @@ class MatchParseOtherExceptionError implements MatchParseError {
 
   MatchParseOtherExceptionError(this.exception);
 }
-
-class MatchParseUnknownError implements MatchParseError {}
-
-//endregion error

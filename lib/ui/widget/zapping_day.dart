@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:zapping_flutter/domain/model/my_match.dart';
+import 'package:zapping_flutter/domain/match/model/my_match.dart';
 import 'package:zapping_flutter/ui/widget/zapping_item.dart';
 
 class ZappingDay extends StatelessWidget {
   final List<MyMatch> _matches;
 
-  const ZappingDay({super.key, required List<MyMatch> matches})
-      : _matches = matches;
+  const ZappingDay({super.key, required List<MyMatch> matches}) : _matches = matches;
 
   @override
   Widget build(BuildContext context) {

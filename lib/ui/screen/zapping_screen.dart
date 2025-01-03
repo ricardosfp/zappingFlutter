@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:zapping_flutter/di/di.dart';
-import 'package:zapping_flutter/domain/model/my_match.dart';
+import 'package:zapping_flutter/domain/match/model/my_match.dart';
+import 'package:zapping_flutter/infrastructure/di/di.dart';
 import 'package:zapping_flutter/ui/view_model/zapping/model/filter_result.dart';
 import 'package:zapping_flutter/ui/view_model/zapping/model/ui_state.dart';
 import 'package:zapping_flutter/ui/view_model/zapping/zapping_provider.dart';
 import 'package:zapping_flutter/ui/widget/zapping_day.dart';
 
 class ZappingScreen extends StatefulWidget {
-  const ZappingScreen({super.key});
+  final ZappingProvider _zappingProvider;
+
+  ZappingScreen({super.key, ZappingProvider? zappingProvider})
+      : _zappingProvider = zappingProvider ?? getIt<ZappingProvider>();
 
   @override
   State<ZappingScreen> createState() => _ZappingScreenState();
 }
 
 class _ZappingScreenState extends State<ZappingScreen> {
-  late final _zappingProvider = getIt<ZappingProvider>();
+  late final _zappingProvider = widget._zappingProvider;
   late final _controller = TextEditingController();
   static final _tabDateFormat = DateFormat("EEEE d");
 
@@ -28,6 +31,7 @@ class _ZappingScreenState extends State<ZappingScreen> {
     _zappingProvider.getMatches();
     _controller.addListener(
       () {
+        // reload the list with the new filter
         setState(() {});
       },
     );
@@ -116,11 +120,9 @@ class _ZappingScreenState extends State<ZappingScreen> {
                   ),
                   body: Align(
                     alignment: Alignment.center,
-                    child: SizedBox(
-                      child: Text(
-                        "Could not load data, try again later",
-                        style: TextStyle(fontSize: 18),
-                      ),
+                    child: Text(
+                      "Could not load data, try again later",
+                      style: TextStyle(fontSize: 18),
                     ),
                   ));
           }
@@ -198,6 +200,6 @@ class _ZappingScreenState extends State<ZappingScreen> {
   }
 
   bool _enableRefreshButton(UiState uiState) {
-    return !_searchMode && uiState is UiDataReady;
+    return !_searchMode && uiState is! UiLoading;
   }
 }

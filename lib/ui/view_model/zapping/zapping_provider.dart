@@ -3,17 +3,18 @@ import 'dart:collection';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
-import 'package:zapping_flutter/data/repository/contract/zapping_repository.dart';
-import 'package:zapping_flutter/data/repository/model/get_articles_result.dart';
-import 'package:zapping_flutter/di/di.dart';
-import 'package:zapping_flutter/domain/match/match_parse_result.dart';
+import 'package:zapping_flutter/data/repository/zapping/get_articles_result.dart';
+import 'package:zapping_flutter/data/repository/zapping/zapping_repository.dart';
 import 'package:zapping_flutter/domain/match/match_parser.dart';
-import 'package:zapping_flutter/domain/model/my_match.dart';
+import 'package:zapping_flutter/domain/match/model/match_parse_result.dart';
+import 'package:zapping_flutter/domain/match/model/my_match.dart';
 import 'package:zapping_flutter/infrastructure/date_utils.dart';
+import 'package:zapping_flutter/infrastructure/di/di.dart';
 import 'package:zapping_flutter/main.dart';
 import 'package:zapping_flutter/ui/view_model/zapping/model/filter_result.dart';
 import 'package:zapping_flutter/ui/view_model/zapping/model/ui_state.dart';
 
+// todo write tests to ensure that the map return is unmodifiable, just like its lists
 @lazySingleton
 class ZappingProvider extends ChangeNotifier {
   final ZappingRepository _zappingRepository;
@@ -25,8 +26,10 @@ class ZappingProvider extends ChangeNotifier {
         _matchParser = matchParser ?? getIt<MatchParser>(),
         _dateUtils = dateUtils ?? getIt<DateUtils>();
 
+  // todo this does not need to be an instance variable
   late final LinkedHashMap<DateTime, List<MyMatch>> _dayMap = LinkedHashMap();
 
+  // this one might need to be public to facilitate testing
   UiState _uiState = UiIdle();
 
   UiState get uiState => _uiState;

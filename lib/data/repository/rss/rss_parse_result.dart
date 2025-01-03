@@ -1,4 +1,4 @@
-import 'package:zapping_flutter/data/repository/model/my_rss_item.dart';
+import 'package:zapping_flutter/data/repository/rss/my_rss_item.dart';
 
 sealed class RssParseResult {}
 

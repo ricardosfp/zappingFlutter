@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:zapping_flutter/domain/model/my_match.dart';
+import 'package:zapping_flutter/domain/match/model/my_match.dart';
 
 class ZappingItem extends StatelessWidget {
   final MyMatch _match;

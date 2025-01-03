@@ -1,5 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:zapping_flutter/di/di.dart';
+// @Skip("not working")
+
+import 'package:test/test.dart';
+import 'package:zapping_flutter/infrastructure/di/di.dart';
 import 'package:zapping_flutter/ui/view_model/zapping/model/ui_state.dart';
 import 'package:zapping_flutter/ui/view_model/zapping/zapping_provider.dart';
 
