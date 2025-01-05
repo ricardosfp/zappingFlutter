@@ -5,7 +5,7 @@ sealed class MatchParseResult {}
 class MatchParseSuccess implements MatchParseResult {
   final MyMatch match;
 
-  MatchParseSuccess(this.match);
+  const MatchParseSuccess(this.match);
 }
 
 sealed class MatchParseError extends MatchParseResult {}
@@ -13,7 +13,7 @@ sealed class MatchParseError extends MatchParseResult {}
 class MatchParseDateError implements MatchParseError {
   final FormatException exception;
 
-  MatchParseDateError(this.exception);
+  const MatchParseDateError(this.exception);
 }
 
 class MatchParseTitleError implements MatchParseError {}
@@ -21,5 +21,5 @@ class MatchParseTitleError implements MatchParseError {}
 class MatchParseOtherExceptionError implements MatchParseError {
   final Exception exception;
 
-  MatchParseOtherExceptionError(this.exception);
+  const MatchParseOtherExceptionError(this.exception);
 }

@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
-import 'package:zapping_flutter/data/repository/zapping/my_article.dart';
+import 'package:zapping_flutter/data/repository/zapping/model/my_article.dart';
 import 'package:zapping_flutter/domain/match/match_parser.dart';
 import 'package:zapping_flutter/domain/match/model/match_parse_result.dart';
 import 'package:zapping_flutter/domain/match/model/my_match.dart';

@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:zapping_flutter/data/repository/zapping/my_article.dart';
+import 'package:zapping_flutter/data/repository/zapping/model/my_article.dart';
 import 'package:zapping_flutter/domain/match/match_parser_impl.dart';
 import 'package:zapping_flutter/domain/match/model/match_parse_result.dart';
 

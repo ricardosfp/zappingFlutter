@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:zapping_flutter/infrastructure/date_utils.dart';
+import 'package:zapping_flutter/infrastructure/date/date_utils.dart';
 
 @LazySingleton(as: DateUtils)
 class DateUtilsImpl implements DateUtils {
