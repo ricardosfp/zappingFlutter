@@ -20,9 +20,9 @@ final class FilterSuccess implements FilterResult {
 }
 
 final class FilterError implements FilterResult {
-  static final FilterError _instance = FilterError._();
+  static const FilterError _instance = FilterError._();
 
-  FilterError._();
+  const FilterError._();
 
   factory FilterError() => _instance;
 }

@@ -8,7 +8,7 @@ sealed class UiState {}
 final class UiIdle implements UiState {
   static final UiIdle _instance = UiIdle._();
 
-  UiIdle._();
+  const UiIdle._();
 
   factory UiIdle() => _instance;
 }
@@ -16,7 +16,7 @@ final class UiIdle implements UiState {
 final class UiLoading implements UiState {
   static final UiLoading _instance = UiLoading._();
 
-  UiLoading._();
+  const UiLoading._();
 
   factory UiLoading() => _instance;
 }
@@ -40,9 +40,9 @@ final class UiDataReady implements UiState {
 }
 
 final class UiError implements UiState {
-  static final UiError _instance = UiError._();
+  static const UiError _instance = UiError._();
 
-  UiError._();
+  const UiError._();
 
   factory UiError() => _instance;
 }

@@ -1,8 +1,8 @@
 import 'package:dart_rss/dart_rss.dart';
 import 'package:injectable/injectable.dart';
-import 'package:zapping_flutter/data/repository/rss/rss_parse_result.dart';
+import 'package:zapping_flutter/data/repository/rss/model/my_rss_item.dart';
+import 'package:zapping_flutter/data/repository/rss/model/rss_parse_result.dart';
 import 'package:zapping_flutter/data/repository/rss/rss_parser.dart';
-import 'package:zapping_flutter/data/repository/rss/my_rss_item.dart';
 
 // todo test the rss parser
 @LazySingleton(as: RssParser)
