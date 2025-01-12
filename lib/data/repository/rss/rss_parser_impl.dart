@@ -12,17 +12,14 @@ final class RssParserImpl implements RssParser {
     try {
       final rssFeed = RssFeed.parse(rssText);
 
-      final myRssItems = rssFeed.items
-          .map((rssItem) {
-            final title = rssItem.title;
-            final pubDate = rssItem.pubDate;
+      final myRssItems = rssFeed.items.map((rssItem) {
+        final title = rssItem.title;
+        final pubDate = rssItem.pubDate;
 
-            if (title != null && pubDate != null) {
-              return MyRssItem(title: title, pubDate: pubDate);
-            }
-          })
-          .nonNulls
-          .toList();
+        if (title != null && pubDate != null) {
+          return MyRssItem(title: title, pubDate: pubDate);
+        }
+      }).nonNulls;
 
       return RssParseSuccess(myRssItems);
     } on Exception catch (ex) {

@@ -1,3 +1,4 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +73,7 @@ class _ZappingScreenState extends State<ZappingScreen> {
                 ),
               );
             case UiDataReady():
-              late final Map<DateTime, List<MyMatch>> finalMap;
+              late final IMap<DateTime, IList<MyMatch>> finalMap;
 
               if (_searchMode && _controller.text.isNotEmpty) {
                 final filterResult = _zappingProvider.filterList(_controller.text);
