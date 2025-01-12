@@ -1,6 +1,7 @@
 // this can be made generic
 import 'dart:collection';
 
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:zapping_flutter/domain/match/model/my_match.dart';
 
 sealed class UiState {}
@@ -23,19 +24,18 @@ final class UiLoading implements UiState {
 
 final class UiDataReady implements UiState {
   // unmodifiable map made up of unmodifiable lists
-  final Map<DateTime, List<MyMatch>> dayMap;
+  final IMap<DateTime, IList<MyMatch>> dayMap;
 
-  UiDataReady(LinkedHashMap<DateTime, List<MyMatch>> dayMapParameter) : dayMap = _initializeMap(dayMapParameter);
+  // LinkedHashMap to guarantee insertion-order
+  UiDataReady(LinkedHashMap<DateTime, Iterable<MyMatch>> dayMap) : dayMap = _initializeMap(dayMap);
 
-  static Map<DateTime, List<MyMatch>> _initializeMap(LinkedHashMap<DateTime, List<MyMatch>> map) {
+  static IMap<DateTime, IList<MyMatch>> _initializeMap(LinkedHashMap<DateTime, Iterable<MyMatch>> map) {
     // make the lists unmodifiable
-    for (final key in map.keys) {
-      map.update(key, (value) {
-        return List.unmodifiable(value);
-      });
-    }
+    final newMap = map.map((key, value) {
+      return MapEntry(key, IList(value));
+    });
 
-    return Map.unmodifiable(map);
+    return IMap(newMap);
   }
 }
 

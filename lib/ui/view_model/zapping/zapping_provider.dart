@@ -98,10 +98,8 @@ class ZappingProvider extends ChangeNotifier {
     // I am using a switch because I want automatic casting of UiState
     switch (uiStateLocal) {
       case UiDataReady():
-        late LinkedHashMap<DateTime, List<MyMatch>> finalMap;
-
         if (textToFilter.isNotEmpty) {
-          finalMap = LinkedHashMap();
+          final LinkedHashMap<DateTime, Iterable<MyMatch>> finalMap = LinkedHashMap();
 
           // traverse the original map
           uiStateLocal.dayMap.forEach((date, matchList) {
@@ -120,13 +118,13 @@ class ZappingProvider extends ChangeNotifier {
 
             // only add this list with this DateTime if the list is not empty
             if (finalMatchList.isNotEmpty) {
-              finalMap[date] = finalMatchList.toList();
+              finalMap[date] = finalMatchList;
             }
           });
 
           return FilterSuccess(finalMap);
         } else {
-          return FilterSuccess(uiStateLocal.dayMap);
+          return FilterSuccess(uiStateLocal.dayMap.unlock);
         }
       default:
         return FilterError();

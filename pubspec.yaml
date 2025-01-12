@@ -45,6 +45,8 @@ dependencies:
 
   injectable: ^2.5.0
 
+  fast_immutable_collections: ^11.0.3
+
   # to parse a properties file
   properties: ^2.1.1
 

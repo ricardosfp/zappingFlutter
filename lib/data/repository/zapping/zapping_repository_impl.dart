@@ -32,7 +32,7 @@ final class ZappingRepositoryImpl implements ZappingRepository {
               return GetArticlesSuccess(
                 rssParseResult.items.map((item) {
                   return MyArticle(title: item.title, date: item.pubDate);
-                }).toList(),
+                }),
               );
 
             case RssParseError():

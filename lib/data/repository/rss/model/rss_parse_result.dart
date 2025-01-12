@@ -1,11 +1,12 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:zapping_flutter/data/repository/rss/model/my_rss_item.dart';
 
 sealed class RssParseResult {}
 
 final class RssParseSuccess implements RssParseResult {
-  final List<MyRssItem> items;
+  final IList<MyRssItem> items;
 
-  RssParseSuccess(List<MyRssItem> itemsParameter) : items = List.unmodifiable(itemsParameter);
+  RssParseSuccess(Iterable<MyRssItem> items) : items = IList(items);
 }
 
 sealed class RssParseError extends RssParseResult {}

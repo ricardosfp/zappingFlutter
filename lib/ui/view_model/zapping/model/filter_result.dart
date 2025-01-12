@@ -1,21 +1,20 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:zapping_flutter/domain/match/model/my_match.dart';
 
 sealed class FilterResult {}
 
 final class FilterSuccess implements FilterResult {
-  final Map<DateTime, List<MyMatch>> filteredMap;
+  final IMap<DateTime, IList<MyMatch>> filteredMap;
 
-  FilterSuccess(Map<DateTime, List<MyMatch>> mapParameter) : filteredMap = _initializeMap(mapParameter);
+  FilterSuccess(Map<DateTime, Iterable<MyMatch>> filteredMap) : filteredMap = _initializeMap(filteredMap);
 
-  static Map<DateTime, List<MyMatch>> _initializeMap(Map<DateTime, List<MyMatch>> map) {
+  static IMap<DateTime, IList<MyMatch>> _initializeMap(Map<DateTime, Iterable<MyMatch>> map) {
     // make the lists unmodifiable
-    for (final key in map.keys) {
-      map.update(key, (value) {
-        return List.unmodifiable(value);
-      });
-    }
+    final newMap = map.map((key, value) {
+      return MapEntry(key, IList(value));
+    });
 
-    return Map.unmodifiable(map);
+    return IMap(newMap);
   }
 }
 

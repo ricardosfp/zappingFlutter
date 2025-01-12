@@ -1,3 +1,4 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -18,21 +19,21 @@ void main() {
   late MockMyHttpClient myHttpClient;
   late MockRssParser rssParser;
 
-  const parserOutput = [
+  const IList<MyRssItem> parserOutput = IListConst([
     MyRssItem(title: "Al Hilal x Al-Ettifaq - 08/11 14:45 - SportTV 1", pubDate: "Fri, 08 Nov 2024 14:45:00"),
     MyRssItem(title: "Al-Riyadh x Al Nassr - 08/11 17:00 - SportTV 1", pubDate: "Fri, 08 Nov 2024 17:00:00"),
     MyRssItem(title: "FC Vizela x GD Chaves - 08/11 18:00 - SportTV +", pubDate: "Fri, 08 Nov 2024 18:00:00"),
-  ];
+  ]);
 
-  const expectedRepositoryOutput = [
+  const IList<MyArticle> expectedRepositoryOutput = IListConst([
     MyArticle(title: "Al Hilal x Al-Ettifaq - 08/11 14:45 - SportTV 1", date: "Fri, 08 Nov 2024 14:45:00"),
     MyArticle(title: "Al-Riyadh x Al Nassr - 08/11 17:00 - SportTV 1", date: "Fri, 08 Nov 2024 17:00:00"),
     MyArticle(title: "FC Vizela x GD Chaves - 08/11 18:00 - SportTV +", date: "Fri, 08 Nov 2024 18:00:00"),
-  ];
+  ]);
 
   setUpAll(() {
     provideDummy<HttpGetResult>(const HttpGetSuccess(""));
-    provideDummy<RssParseResult>(RssParseSuccess(const []));
+    provideDummy<RssParseResult>(RssParseSuccess(const IList.empty()));
   });
 
   setUp(() {
@@ -80,7 +81,7 @@ void main() {
       final exceptionThrown = Exception();
 
       when(myHttpClient.getAsString(any, headers: anyNamed("headers"))).thenThrow(exceptionThrown);
-      when(rssParser.parse(any)).thenReturn(RssParseSuccess(const []));
+      when(rssParser.parse(any)).thenReturn(RssParseSuccess(const IList.empty()));
 
       final result = await zappingRepository.getArticles("");
 

@@ -1,11 +1,12 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:zapping_flutter/data/repository/zapping/model/my_article.dart';
 
 sealed class GetArticlesResult {}
 
 class GetArticlesSuccess implements GetArticlesResult {
-  final List<MyArticle> articles;
+  final IList<MyArticle> articles;
 
-  GetArticlesSuccess(List<MyArticle> articlesParameter) : articles = List.unmodifiable(articlesParameter);
+  GetArticlesSuccess(Iterable<MyArticle> articles) : articles = IList(articles);
 }
 
 sealed class GetArticlesError extends GetArticlesResult {}
