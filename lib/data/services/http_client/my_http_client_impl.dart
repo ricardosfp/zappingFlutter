@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
-import 'package:zapping_flutter/data/repository/http_client/model/http_get_result.dart';
-import 'package:zapping_flutter/data/repository/http_client/my_http_client.dart';
+import 'package:zapping_flutter/data/services/http_client/model/http_get_result.dart';
+import 'package:zapping_flutter/data/services/http_client/my_http_client.dart';
 import 'package:zapping_flutter/infrastructure/di/di.dart';
 import 'package:zapping_flutter/infrastructure/response_extension.dart';
 

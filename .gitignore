@@ -42,6 +42,9 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-
 /properties
-private readme
+
+# generated files
+*.g.dart
+*.mocks.dart
+*.config.dart

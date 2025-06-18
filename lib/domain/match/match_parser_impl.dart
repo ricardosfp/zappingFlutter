@@ -26,7 +26,15 @@ final class MatchParserImpl implements MatchParser {
           if (homeTeam.isEmpty || awayTeam.isEmpty || channel.isEmpty) {
             return MatchParseTitleError();
           } else {
-            return MatchParseSuccess(MyMatch(homeTeam, awayTeam, date, channel, originalText));
+            return MatchParseSuccess(
+              MyMatch(
+                homeTeam: homeTeam,
+                awayTeam: awayTeam,
+                date: date,
+                channel: channel,
+                originalText: originalText,
+              ),
+            );
           }
         } else {
           return MatchParseTitleError();

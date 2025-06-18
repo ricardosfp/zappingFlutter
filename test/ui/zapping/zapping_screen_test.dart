@@ -1,24 +1,14 @@
 @Skip("not working")
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:zapping_flutter/infrastructure/di/di.dart';
-import 'package:zapping_flutter/ui/screen/zapping_screen.dart';
-import 'package:zapping_flutter/ui/view_model/zapping/model/ui_state.dart';
-import 'package:zapping_flutter/ui/view_model/zapping/zapping_provider.dart';
+import 'package:zapping_flutter/ui/zapping/view_model/zapping_provider.dart';
+import 'package:zapping_flutter/ui/zapping/zapping_screen.dart';
 
 import 'zapping_screen_test.mocks.dart';
-
-class _ZappingProvider extends ZappingProvider {
-  @override
-  UiState get uiState => UiLoading();
-
-  @override
-  void getMatches() {
-    // _uiState = UiDataReady(_dayMap);
-    // notifyListeners();
-  }
-}
 
 @GenerateMocks([ZappingProvider])
 void main() {

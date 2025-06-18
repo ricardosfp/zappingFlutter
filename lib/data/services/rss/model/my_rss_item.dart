@@ -1,14 +1,14 @@
 import 'package:autoequal/autoequal.dart';
 import 'package:equatable/equatable.dart';
 
-part 'my_article.g.dart';
+part 'my_rss_item.g.dart';
 
 @autoequal
-final class MyArticle extends Equatable {
+final class MyRssItem extends Equatable {
   final String title;
-  final String date;
+  final String pubDate;
 
-  const MyArticle({required this.title, required this.date});
+  const MyRssItem({required this.title, required this.pubDate});
 
   @override
   List<Object?> get props => _$props;

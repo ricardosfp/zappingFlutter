@@ -2,6 +2,7 @@ import 'package:test/test.dart';
 import 'package:zapping_flutter/data/repository/zapping/model/my_article.dart';
 import 'package:zapping_flutter/domain/match/match_parser_impl.dart';
 import 'package:zapping_flutter/domain/match/model/match_parse_result.dart';
+import 'package:zapping_flutter/domain/match/model/my_match.dart';
 
 void main() {
   late MatchParserImpl matchParser;
@@ -13,6 +14,16 @@ void main() {
   const validArticleChannel = "SportTv1";
   const validArticleTitle = "$validArticleHomeTeam x $validArticleAwayTeam - 14/05 23:00 - $validArticleChannel";
   const validArticle = MyArticle(title: validArticleTitle, date: validArticleDateString);
+
+  final matchParseSuccess = MatchParseSuccess(
+    MyMatch(
+      homeTeam: validArticleHomeTeam,
+      awayTeam: validArticleAwayTeam,
+      date: DateTime(2024, 5, 14, 23, 0, 0),
+      channel: validArticleChannel,
+      originalText: validArticleTitle,
+    ),
+  );
 
   // invalid articles
   const invalidArticleInvalidDate = MyArticle(title: validArticleTitle, date: "14 May 24");
@@ -30,16 +41,7 @@ void main() {
   test("parse valid article returns success", () {
     final matchParseResult = matchParser.parse(validArticle);
 
-    expect(matchParseResult, isA<MatchParseSuccess>());
-
-    final match = (matchParseResult as MatchParseSuccess).match;
-
-    expect(match.originalText, validArticleTitle);
-    expect(match.homeTeam, validArticleHomeTeam);
-    expect(match.awayTeam, validArticleAwayTeam);
-    expect(match.date, DateTime(2024, 5, 14, 23, 0, 0));
-    expect(match.channel, validArticleChannel);
-    expect(match.originalText, validArticleTitle);
+    expect(matchParseResult, matchParseSuccess);
   });
 
   group("failure tests", () {
@@ -52,19 +54,19 @@ void main() {
     test("parse invalid home team returns title error", () {
       final matchParseResult = matchParser.parse(invalidArticleInvalidHomeTeam);
 
-      expect(matchParseResult, isA<MatchParseTitleError>());
+      expect(matchParseResult, MatchParseTitleError());
     });
 
     test("parse invalid away team returns title error", () {
       final matchParseResult = matchParser.parse(invalidArticleInvalidAwayTeam);
 
-      expect(matchParseResult, isA<MatchParseTitleError>());
+      expect(matchParseResult, MatchParseTitleError());
     });
 
     test("parse invalid channel returns title error", () {
       final matchParseResult = matchParser.parse(invalidArticleInvalidChannel);
 
-      expect(matchParseResult, isA<MatchParseTitleError>());
+      expect(matchParseResult, MatchParseTitleError());
     });
   });
 }
