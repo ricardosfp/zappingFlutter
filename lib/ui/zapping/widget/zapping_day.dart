@@ -1,7 +1,7 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:zapping_flutter/domain/match/model/my_match.dart';
-import 'package:zapping_flutter/ui/widget/zapping_item.dart';
+import 'package:zapping_flutter/ui/zapping/widget/zapping_item.dart';
 
 class ZappingDay extends StatelessWidget {
   final IList<MyMatch> _matches;

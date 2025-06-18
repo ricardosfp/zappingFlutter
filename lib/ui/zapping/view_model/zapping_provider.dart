@@ -11,10 +11,9 @@ import 'package:zapping_flutter/domain/match/model/my_match.dart';
 import 'package:zapping_flutter/infrastructure/date/date_utils.dart';
 import 'package:zapping_flutter/infrastructure/di/di.dart';
 import 'package:zapping_flutter/main.dart';
-import 'package:zapping_flutter/ui/view_model/zapping/model/filter_result.dart';
-import 'package:zapping_flutter/ui/view_model/zapping/model/ui_state.dart';
+import 'package:zapping_flutter/ui/zapping/view_model/model/filter_result.dart';
+import 'package:zapping_flutter/ui/zapping/view_model/model/ui_state.dart';
 
-// todo write tests to ensure that the map return is unmodifiable, just like its lists
 @lazySingleton
 class ZappingProvider extends ChangeNotifier {
   final ZappingRepository _zappingRepository;
@@ -68,7 +67,7 @@ class ZappingProvider extends ChangeNotifier {
         _dayMap.clear();
 
         // split matches into days
-        for (var match in matches) {
+        for (final match in matches) {
           _dayMap.putIfAbsent(_dateUtils.dateAtMidnight(match.date), () {
             return [];
           }).add(match);
@@ -99,7 +98,7 @@ class ZappingProvider extends ChangeNotifier {
     switch (uiStateLocal) {
       case UiDataReady():
         if (textToFilter.isNotEmpty) {
-          final LinkedHashMap<DateTime, Iterable<MyMatch>> finalMap = LinkedHashMap();
+          final LinkedHashMap<DateTime, List<MyMatch>> finalMap = LinkedHashMap();
 
           // traverse the original map
           uiStateLocal.dayMap.forEach((date, matchList) {
@@ -118,13 +117,13 @@ class ZappingProvider extends ChangeNotifier {
 
             // only add this list with this DateTime if the list is not empty
             if (finalMatchList.isNotEmpty) {
-              finalMap[date] = finalMatchList;
+              finalMap[date] = finalMatchList.toList();
             }
           });
 
           return FilterSuccess(finalMap);
         } else {
-          return FilterSuccess(uiStateLocal.dayMap.unlock);
+          return FilterSuccess.fromImmutable(uiStateLocal.dayMap);
         }
       default:
         return FilterError();

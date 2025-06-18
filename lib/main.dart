@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:properties/properties.dart';
 import 'package:zapping_flutter/infrastructure/di/di.dart';
-import 'package:zapping_flutter/ui/screen/zapping_screen.dart';
+import 'package:zapping_flutter/ui/zapping/zapping_screen.dart';
 
 late final String zappingUrl;
 

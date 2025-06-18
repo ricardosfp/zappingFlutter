@@ -4,10 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:zapping_flutter/domain/match/model/my_match.dart';
 import 'package:zapping_flutter/infrastructure/di/di.dart';
-import 'package:zapping_flutter/ui/view_model/zapping/model/filter_result.dart';
-import 'package:zapping_flutter/ui/view_model/zapping/model/ui_state.dart';
-import 'package:zapping_flutter/ui/view_model/zapping/zapping_provider.dart';
-import 'package:zapping_flutter/ui/widget/zapping_day.dart';
+import 'package:zapping_flutter/ui/zapping/view_model/model/filter_result.dart';
+import 'package:zapping_flutter/ui/zapping/view_model/model/ui_state.dart';
+import 'package:zapping_flutter/ui/zapping/view_model/zapping_provider.dart';
+import 'package:zapping_flutter/ui/zapping/widget/zapping_day.dart';
 
 class ZappingScreen extends StatefulWidget {
   final ZappingProvider _zappingProvider;

@@ -1,25 +1,49 @@
+import 'package:autoequal/autoequal.dart';
+import 'package:equatable/equatable.dart';
 import 'package:zapping_flutter/domain/match/model/my_match.dart';
 
-sealed class MatchParseResult {}
+part 'match_parse_result.g.dart';
 
-class MatchParseSuccess implements MatchParseResult {
+sealed class MatchParseResult extends Equatable {
+  const MatchParseResult();
+}
+
+@autoequal
+final class MatchParseSuccess extends MatchParseResult {
   final MyMatch match;
 
   const MatchParseSuccess(this.match);
+
+  @override
+  List<Object?> get props => _$props;
 }
 
-sealed class MatchParseError extends MatchParseResult {}
+sealed class MatchParseError extends MatchParseResult {
+  const MatchParseError();
+}
 
-class MatchParseDateError implements MatchParseError {
+@autoequal
+final class MatchParseDateError extends MatchParseError {
   final FormatException exception;
 
   const MatchParseDateError(this.exception);
+
+  @override
+  List<Object?> get props => _$props;
 }
 
-class MatchParseTitleError implements MatchParseError {}
+@autoequal
+final class MatchParseTitleError extends MatchParseError {
+  @override
+  List<Object?> get props => _$props;
+}
 
-class MatchParseOtherExceptionError implements MatchParseError {
+@autoequal
+final class MatchParseOtherExceptionError extends MatchParseError {
   final Exception exception;
 
   const MatchParseOtherExceptionError(this.exception);
+
+  @override
+  List<Object?> get props => _$props;
 }
