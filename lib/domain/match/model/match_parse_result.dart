@@ -1,5 +1,5 @@
-import 'package:autoequal/autoequal.dart';
 import 'package:equatable/equatable.dart';
+import 'package:equatable_annotations/equatable_annotations.dart';
 import 'package:zapping_flutter/domain/match/model/my_match.dart';
 
 part 'match_parse_result.g.dart';
@@ -8,7 +8,7 @@ sealed class MatchParseResult extends Equatable {
   const MatchParseResult();
 }
 
-@autoequal
+@generateProps
 final class MatchParseSuccess extends MatchParseResult {
   final MyMatch match;
 
@@ -22,7 +22,7 @@ sealed class MatchParseError extends MatchParseResult {
   const MatchParseError();
 }
 
-@autoequal
+@generateProps
 final class MatchParseDateError extends MatchParseError {
   final FormatException exception;
 
@@ -32,13 +32,13 @@ final class MatchParseDateError extends MatchParseError {
   List<Object?> get props => _$props;
 }
 
-@autoequal
+@generateProps
 final class MatchParseTitleError extends MatchParseError {
   @override
   List<Object?> get props => _$props;
 }
 
-@autoequal
+@generateProps
 final class MatchParseOtherExceptionError extends MatchParseError {
   final Exception exception;
 

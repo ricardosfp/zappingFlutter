@@ -1,9 +1,9 @@
-import 'package:autoequal/autoequal.dart';
 import 'package:equatable/equatable.dart';
+import 'package:equatable_annotations/equatable_annotations.dart';
 
 part 'my_rss_item.g.dart';
 
-@autoequal
+@generateProps
 final class MyRssItem extends Equatable {
   final String title;
   final String pubDate;

@@ -20,6 +20,7 @@ version: 1.0.0+1
 
 environment:
   sdk: '>=3.4.4 <4.0.0'
+  flutter: ^3.32.4
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -40,21 +41,21 @@ dependencies:
   # to generate equals, hashCode and toString for models
   equatable: ^2.0.7
   # automatically generate properties for equatable
-  autoequal: ^0.9.1
+  equatable_annotations: ^1.0.1
 
   # date formatting
   intl: ^0.19.0
 
   # dependency injection
-  get_it: ^8.0.1
+  get_it: ^8.0.3
   injectable: ^2.5.0
 
   # immutable collections
-  fast_immutable_collections: ^11.0.3
+  fast_immutable_collections: ^11.0.4
 
   # network
-  http: ^1.2.2
-  pretty_http_logger: ^1.0.4
+  http: ^1.4.0
+  pretty_http_logger: ^1.0.5
 
   # properties file parsing
   properties: ^2.1.1
@@ -63,7 +64,7 @@ dependencies:
   dart_rss: ^3.0.3
 
   # view model
-  provider: ^6.1.2
+  provider: ^6.1.5
 
   # others
   # to remove diacritics from a string, for string comparison
@@ -75,20 +76,20 @@ dev_dependencies:
 
   test: ^1.25.7
 
-  mockito: ^5.4.4
+  mockito: ^5.4.6
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
   injectable_generator:
 
   build_runner:
 
-  autoequal_gen: ^0.9.1
+  equatable_gen: ^1.0.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
