@@ -13,7 +13,7 @@ class ZappingScreen extends StatefulWidget {
   final ZappingProvider _zappingProvider;
 
   ZappingScreen({super.key, ZappingProvider? zappingProvider})
-      : _zappingProvider = zappingProvider ?? getIt<ZappingProvider>();
+    : _zappingProvider = zappingProvider ?? getIt<ZappingProvider>();
 
   @override
   State<ZappingScreen> createState() => _ZappingScreenState();
@@ -30,12 +30,10 @@ class _ZappingScreenState extends State<ZappingScreen> {
   void initState() {
     super.initState();
     _zappingProvider.getMatches();
-    _controller.addListener(
-      () {
-        // reload the list with the new filter
-        setState(() {});
-      },
-    );
+    _controller.addListener(() {
+      // reload the list with the new filter
+      setState(() {});
+    });
   }
 
   @override
@@ -66,9 +64,7 @@ class _ZappingScreenState extends State<ZappingScreen> {
                   child: SizedBox(
                     width: MediaQuery.sizeOf(context).width * 0.25,
                     height: MediaQuery.sizeOf(context).width * 0.25,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 8,
-                    ),
+                    child: CircularProgressIndicator(strokeWidth: 8),
                   ),
                 ),
               );
@@ -107,25 +103,24 @@ class _ZappingScreenState extends State<ZappingScreen> {
                       isScrollable: true,
                     ),
                   ),
-                  body: TabBarView(
-                    children: zappingDays,
-                  ),
+                  body: TabBarView(children: zappingDays),
                 ),
               );
             case UiError():
               return Scaffold(
-                  appBar: AppBar(
-                    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                    title: _provideAppBarTitle(uiState),
-                    actions: _provideAppBarActions(uiState),
+                appBar: AppBar(
+                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  title: _provideAppBarTitle(uiState),
+                  actions: _provideAppBarActions(uiState),
+                ),
+                body: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Could not load data, try again later",
+                    style: TextStyle(fontSize: 18),
                   ),
-                  body: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Could not load data, try again later",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ));
+                ),
+              );
           }
         },
       ),
@@ -141,18 +136,9 @@ class _ZappingScreenState extends State<ZappingScreen> {
             // to show letters and numbers
             keyboardType: TextInputType.visiblePassword,
             textInputAction: TextInputAction.search,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 22,
-            ),
+            style: TextStyle(color: Colors.black, fontSize: 22),
           )
-        : const Text(
-            "Zapping",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 22,
-            ),
-          );
+        : const Text("Zapping", style: TextStyle(color: Colors.black, fontSize: 22));
   }
 
   // only show search icon and allow search mode when the data is ready
@@ -161,41 +147,35 @@ class _ZappingScreenState extends State<ZappingScreen> {
     return [
       if (_searchMode && uiState is UiDataReady) ...[
         IconButton(
-            icon: Icon(
-              Icons.clear,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              setState(() {
-                _searchMode = false;
-              });
-            })
+          icon: Icon(Icons.clear, color: Colors.black),
+          onPressed: () {
+            setState(() {
+              _searchMode = false;
+            });
+          },
+        ),
       ],
       if (!_searchMode && uiState is UiDataReady) ...[
         IconButton(
-            icon: Icon(
-              Icons.search,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              setState(() {
-                _searchMode = true;
-              });
-            })
+          icon: Icon(Icons.search, color: Colors.black),
+          onPressed: () {
+            setState(() {
+              _searchMode = true;
+            });
+          },
+        ),
       ],
       () {
         final enableRefreshButton = _enableRefreshButton(uiState);
 
         return IconButton(
-            icon: Icon(
-              Icons.refresh,
-              color: enableRefreshButton ? Colors.black : Colors.black45,
-            ),
-            onPressed: () {
-              if (enableRefreshButton) {
-                _zappingProvider.getMatches();
-              }
-            });
+          icon: Icon(Icons.refresh, color: enableRefreshButton ? Colors.black : Colors.black45),
+          onPressed: () {
+            if (enableRefreshButton) {
+              _zappingProvider.getMatches();
+            }
+          },
+        );
       }(),
     ];
   }

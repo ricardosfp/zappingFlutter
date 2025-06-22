@@ -18,9 +18,8 @@ void main() {
 
   // repeat this for each one of the UiState
   testWidgets("Zapping Screen has an app bar", skip: true, (tester) async {
-    await tester.pumpWidget(MaterialApp(
-        home: ZappingScreen(
-      zappingProvider: MockZappingProvider(),
-    )));
+    await tester.pumpWidget(
+      MaterialApp(home: ZappingScreen(zappingProvider: MockZappingProvider())),
+    );
   });
 }

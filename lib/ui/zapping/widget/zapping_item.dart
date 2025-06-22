@@ -16,18 +16,9 @@ class ZappingItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "${_match.homeTeam} x ${_match.awayTeam}",
-          style: _textStyle,
-        ),
-        Text(
-          _dateFormat.format(_match.date),
-          style: _textStyle,
-        ),
-        Text(
-          _match.channel,
-          style: _textStyle,
-        ),
+        Text("${_match.homeTeam} x ${_match.awayTeam}", style: _textStyle),
+        Text(_dateFormat.format(_match.date), style: _textStyle),
+        Text(_match.channel, style: _textStyle),
       ],
     );
   }

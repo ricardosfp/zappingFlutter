@@ -13,7 +13,8 @@ sealed class FilterResult extends Equatable {
 final class FilterSuccess extends FilterResult {
   final IMap<DateTime, IList<MyMatch>> filteredMap;
 
-  FilterSuccess(Map<DateTime, List<MyMatch>> filteredMap) : filteredMap = _initializeMap(filteredMap);
+  FilterSuccess(Map<DateTime, List<MyMatch>> filteredMap)
+    : filteredMap = _initializeMap(filteredMap);
 
   const FilterSuccess.fromImmutable(this.filteredMap);
 

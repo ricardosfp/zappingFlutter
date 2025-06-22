@@ -20,10 +20,13 @@ class ZappingProvider extends ChangeNotifier {
   final MatchParser _matchParser;
   final DateUtils _dateUtils;
 
-  ZappingProvider({ZappingRepository? zappingRepository, MatchParser? matchParser, DateUtils? dateUtils})
-      : _zappingRepository = zappingRepository ?? getIt<ZappingRepository>(),
-        _matchParser = matchParser ?? getIt<MatchParser>(),
-        _dateUtils = dateUtils ?? getIt<DateUtils>();
+  ZappingProvider({
+    ZappingRepository? zappingRepository,
+    MatchParser? matchParser,
+    DateUtils? dateUtils,
+  }) : _zappingRepository = zappingRepository ?? getIt<ZappingRepository>(),
+       _matchParser = matchParser ?? getIt<MatchParser>(),
+       _dateUtils = dateUtils ?? getIt<DateUtils>();
 
   // todo this does not need to be an instance variable
   late final LinkedHashMap<DateTime, List<MyMatch>> _dayMap = LinkedHashMap();
@@ -68,9 +71,11 @@ class ZappingProvider extends ChangeNotifier {
 
         // split matches into days
         for (final match in matches) {
-          _dayMap.putIfAbsent(_dateUtils.dateAtMidnight(match.date), () {
-            return [];
-          }).add(match);
+          _dayMap
+              .putIfAbsent(_dateUtils.dateAtMidnight(match.date), () {
+                return [];
+              })
+              .add(match);
         }
 
         _uiState = UiDataReady(_dayMap);
@@ -106,11 +111,17 @@ class ZappingProvider extends ChangeNotifier {
             final finalMatchList = matchList.where((myMatch) {
               final lowerCaseQuery = removeDiacritics(textToFilter.toLowerCase());
               // either home team
-              final homeTeamContainsQuery = removeDiacritics(myMatch.homeTeam.toLowerCase()).contains(lowerCaseQuery);
+              final homeTeamContainsQuery = removeDiacritics(
+                myMatch.homeTeam.toLowerCase(),
+              ).contains(lowerCaseQuery);
               // or away team
-              final awayTeamContainsQuery = removeDiacritics(myMatch.awayTeam.toLowerCase()).contains(lowerCaseQuery);
+              final awayTeamContainsQuery = removeDiacritics(
+                myMatch.awayTeam.toLowerCase(),
+              ).contains(lowerCaseQuery);
               // or channel contain the query string
-              final channelContainsQuery = removeDiacritics(myMatch.channel.toLowerCase()).contains(lowerCaseQuery);
+              final channelContainsQuery = removeDiacritics(
+                myMatch.channel.toLowerCase(),
+              ).contains(lowerCaseQuery);
 
               return homeTeamContainsQuery || awayTeamContainsQuery || channelContainsQuery;
             });
