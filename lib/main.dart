@@ -9,13 +9,10 @@ late final String zappingUrl;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   // todo change to DefaultAssetBundle.of(context)
-  final appPropertiesString =
-      await rootBundle.loadString("properties/app.properties");
+  final appPropertiesString = await rootBundle.loadString("properties/app.properties");
 
   zappingUrl = Properties.fromString(appPropertiesString).get("zapping.url")!;
 

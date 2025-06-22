@@ -15,8 +15,8 @@ final class ZappingRepositoryImpl implements ZappingRepository {
   final RssParser _rssParser;
 
   ZappingRepositoryImpl({MyHttpClient? http, RssParser? rssParser})
-      : _http = http ?? getIt<MyHttpClient>(),
-        _rssParser = rssParser ?? getIt<RssParser>();
+    : _http = http ?? getIt<MyHttpClient>(),
+      _rssParser = rssParser ?? getIt<RssParser>();
 
   @override
   Future<GetArticlesResult> getArticles(String url) async {
