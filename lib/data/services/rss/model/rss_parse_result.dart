@@ -1,5 +1,5 @@
-import 'package:autoequal/autoequal.dart';
 import 'package:equatable/equatable.dart';
+import 'package:equatable_annotations/equatable_annotations.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:zapping_flutter/data/services/rss/model/my_rss_item.dart';
 
@@ -9,7 +9,7 @@ sealed class RssParseResult extends Equatable {
   const RssParseResult();
 }
 
-@autoequal
+@generateProps
 final class RssParseSuccess extends RssParseResult {
   final IList<MyRssItem> items;
 
@@ -23,7 +23,7 @@ sealed class RssParseError extends RssParseResult {
   const RssParseError();
 }
 
-@autoequal
+@generateProps
 final class RssParseException extends RssParseError {
   final Exception exception;
 

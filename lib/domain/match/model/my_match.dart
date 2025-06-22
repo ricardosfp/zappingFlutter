@@ -1,10 +1,10 @@
-import 'package:autoequal/autoequal.dart';
 import 'package:equatable/equatable.dart';
+import 'package:equatable_annotations/equatable_annotations.dart';
 
 part 'my_match.g.dart';
 
 // this class is called [MyMatch] to not be confused with [Match]
-@autoequal
+@generateProps
 final class MyMatch extends Equatable {
   final String homeTeam;
   final String awayTeam;

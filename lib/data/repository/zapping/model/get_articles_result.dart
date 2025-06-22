@@ -1,5 +1,5 @@
-import 'package:autoequal/autoequal.dart';
 import 'package:equatable/equatable.dart';
+import 'package:equatable_annotations/equatable_annotations.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:zapping_flutter/data/repository/zapping/model/my_article.dart';
 
@@ -9,7 +9,7 @@ sealed class GetArticlesResult extends Equatable {
   const GetArticlesResult();
 }
 
-@autoequal
+@generateProps
 class GetArticlesSuccess extends GetArticlesResult {
   final IList<MyArticle> articles;
 
@@ -23,19 +23,19 @@ sealed class GetArticlesError extends GetArticlesResult {
   const GetArticlesError();
 }
 
-@autoequal
+@generateProps
 final class GetArticlesHttpError extends GetArticlesError {
   @override
   List<Object?> get props => _$props;
 }
 
-@autoequal
+@generateProps
 final class GetArticlesParseError extends GetArticlesError {
   @override
   List<Object?> get props => _$props;
 }
 
-@autoequal
+@generateProps
 final class GetArticlesOtherExceptionError extends GetArticlesError {
   final Exception exception;
 

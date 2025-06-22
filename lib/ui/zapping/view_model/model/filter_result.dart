@@ -1,5 +1,5 @@
-import 'package:autoequal/autoequal.dart';
 import 'package:equatable/equatable.dart';
+import 'package:equatable_annotations/equatable_annotations.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:zapping_flutter/domain/match/model/my_match.dart';
 
@@ -9,7 +9,7 @@ sealed class FilterResult extends Equatable {
   const FilterResult();
 }
 
-@autoequal
+@generateProps
 final class FilterSuccess extends FilterResult {
   final IMap<DateTime, IList<MyMatch>> filteredMap;
 
@@ -30,7 +30,7 @@ final class FilterSuccess extends FilterResult {
   List<Object?> get props => _$props;
 }
 
-@autoequal
+@generateProps
 final class FilterError extends FilterResult {
   @override
   List<Object?> get props => _$props;

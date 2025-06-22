@@ -1,5 +1,5 @@
-import 'package:autoequal/autoequal.dart';
 import 'package:equatable/equatable.dart';
+import 'package:equatable_annotations/equatable_annotations.dart';
 
 part 'http_get_result.g.dart';
 
@@ -7,7 +7,7 @@ sealed class HttpGetResult extends Equatable {
   const HttpGetResult();
 }
 
-@autoequal
+@generateProps
 final class HttpGetSuccess extends HttpGetResult {
   final String bodyAsString;
 
@@ -21,7 +21,7 @@ sealed class HttpGetError extends HttpGetResult {
   const HttpGetError();
 }
 
-@autoequal
+@generateProps
 final class HttpGetUnsuccessfulResponse extends HttpGetError {
   final String bodyAsString;
 
@@ -31,7 +31,7 @@ final class HttpGetUnsuccessfulResponse extends HttpGetError {
   List<Object?> get props => _$props;
 }
 
-@autoequal
+@generateProps
 final class HttpGetException extends HttpGetError {
   final Exception exception;
 
