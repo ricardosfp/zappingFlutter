@@ -10,7 +10,7 @@ sealed class GetArticlesResult extends Equatable {
 }
 
 @generateProps
-class GetArticlesSuccess extends GetArticlesResult {
+final class GetArticlesSuccess extends GetArticlesResult {
   final IList<MyArticle> articles;
 
   GetArticlesSuccess(List<MyArticle> articles) : articles = IList(articles);
@@ -19,27 +19,9 @@ class GetArticlesSuccess extends GetArticlesResult {
   List<Object?> get props => _$props;
 }
 
-sealed class GetArticlesError extends GetArticlesResult {
+@generateProps
+final class GetArticlesError extends GetArticlesResult {
   const GetArticlesError();
-}
-
-@generateProps
-final class GetArticlesHttpError extends GetArticlesError {
-  @override
-  List<Object?> get props => _$props;
-}
-
-@generateProps
-final class GetArticlesParseError extends GetArticlesError {
-  @override
-  List<Object?> get props => _$props;
-}
-
-@generateProps
-final class GetArticlesOtherExceptionError extends GetArticlesError {
-  final Exception exception;
-
-  const GetArticlesOtherExceptionError(this.exception);
 
   @override
   List<Object?> get props => _$props;

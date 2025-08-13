@@ -38,10 +38,9 @@ class ZappingProvider extends ChangeNotifier {
 
   // todo test
   void getMatches() async {
-    _uiState = UiLoading();
-    notifyListeners();
+    _updateState(UiLoading());
 
-    final getArticlesResult = await _zappingRepository.getArticles(zappingUrl);
+    final getArticlesResult = await _zappingRepository.getArticles();
 
     switch (getArticlesResult) {
       case GetArticlesSuccess():
@@ -78,18 +77,10 @@ class ZappingProvider extends ChangeNotifier {
               .add(match);
         }
 
-        _uiState = UiDataReady(_dayMap);
-        notifyListeners();
+        _updateState(UiDataReady(_dayMap));
 
-      case GetArticlesHttpError():
-        _uiState = UiError();
-        notifyListeners();
-      case GetArticlesParseError():
-        _uiState = UiError();
-        notifyListeners();
-      case GetArticlesOtherExceptionError():
-        _uiState = UiError();
-        notifyListeners();
+      case GetArticlesError():
+        _updateState(UiError());
     }
   }
 
@@ -139,5 +130,10 @@ class ZappingProvider extends ChangeNotifier {
       default:
         return FilterError();
     }
+  }
+
+  void _updateState(UiState state) {
+    _uiState = state;
+    notifyListeners();
   }
 }
