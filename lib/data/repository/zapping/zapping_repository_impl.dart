@@ -1,49 +1,29 @@
 import 'package:injectable/injectable.dart';
+import 'package:zapping_flutter/data/repository/zapping/data_source/zapping_data_source_remote.dart';
 import 'package:zapping_flutter/data/repository/zapping/model/get_articles_result.dart';
 import 'package:zapping_flutter/data/repository/zapping/model/my_article.dart';
 import 'package:zapping_flutter/data/repository/zapping/zapping_repository.dart';
-import 'package:zapping_flutter/data/services/http_client/model/http_get_result.dart';
-import 'package:zapping_flutter/data/services/http_client/my_http_client.dart';
-import 'package:zapping_flutter/data/services/rss/model/rss_parse_result.dart';
-import 'package:zapping_flutter/data/services/rss/rss_parser.dart';
-import 'package:zapping_flutter/infrastructure/di/di.dart';
+import 'package:zapping_flutter/infrastructure/result.dart';
 
 @LazySingleton(as: ZappingRepository)
 final class ZappingRepositoryImpl implements ZappingRepository {
-  // todo use data sources
-  final MyHttpClient _http;
-  final RssParser _rssParser;
+  final ZappingDataSourceRemote _remoteSource;
 
-  ZappingRepositoryImpl({MyHttpClient? http, RssParser? rssParser})
-    : _http = http ?? getIt<MyHttpClient>(),
-      _rssParser = rssParser ?? getIt<RssParser>();
+  ZappingRepositoryImpl(this._remoteSource);
 
   @override
-  Future<GetArticlesResult> getArticles(String url) async {
+  Future<GetArticlesResult> getArticles() async {
     try {
-      // the user-agent part is because the website was giving us error 429 with the default user-agent
-      final httpGetResult = await _http.getAsString(url, headers: {"user-agent": ""});
+      final result = await _remoteSource.getArticles();
 
-      switch (httpGetResult) {
-        case HttpGetSuccess():
-          final rssParseResult = _rssParser.parse(httpGetResult.bodyAsString);
-
-          switch (rssParseResult) {
-            case RssParseSuccess():
-              return GetArticlesSuccess(
-                rssParseResult.items.map((item) {
-                  return MyArticle(title: item.title, date: item.pubDate);
-                }).toList(),
-              );
-
-            case RssParseError():
-              return GetArticlesParseError();
-          }
-        case HttpGetError():
-          return GetArticlesHttpError();
+      switch (result) {
+        case Success<List<MyArticle>>():
+          return GetArticlesSuccess(result.value);
+        case Error<List<MyArticle>>():
+          return GetArticlesError();
       }
-    } on Exception catch (ex) {
-      return GetArticlesOtherExceptionError(ex);
+    } catch (_, _) {
+      return GetArticlesError();
     }
   }
 }

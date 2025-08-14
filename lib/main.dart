@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:properties/properties.dart';
 import 'package:zapping_flutter/infrastructure/di/di.dart';
 import 'package:zapping_flutter/ui/zapping/zapping_screen.dart';
-
-late final String zappingUrl;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
-  // todo change to DefaultAssetBundle.of(context)
-  final appPropertiesString = await rootBundle.loadString("properties/app.properties");
-
-  zappingUrl = Properties.fromString(appPropertiesString).get("zapping.url")!;
 
   configureDependencies();
   runApp(const MyApp());

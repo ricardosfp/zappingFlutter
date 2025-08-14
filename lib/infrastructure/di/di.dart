@@ -13,7 +13,18 @@ void configureDependencies() => getIt.init();
 
 @module
 abstract class Module {
+
   @lazySingleton
   HttpWithMiddleware getHttp() =>
       HttpWithMiddleware.build(middlewares: [HttpLogger(logLevel: LogLevel.BODY)]);
+
+  @Named(DiName.zappingUrl)
+  @lazySingleton
+  String getZappingUrl() {
+    return const String.fromEnvironment("zappingUrl");
+  }
+}
+
+abstract final class DiName {
+  static const zappingUrl = "zappingUrl";
 }

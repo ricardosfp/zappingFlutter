@@ -10,7 +10,6 @@ import 'package:zapping_flutter/domain/match/model/match_parse_result.dart';
 import 'package:zapping_flutter/domain/match/model/my_match.dart';
 import 'package:zapping_flutter/infrastructure/date/date_utils.dart';
 import 'package:zapping_flutter/infrastructure/di/di.dart';
-import 'package:zapping_flutter/main.dart';
 import 'package:zapping_flutter/ui/zapping/view_model/model/filter_result.dart';
 import 'package:zapping_flutter/ui/zapping/view_model/model/ui_state.dart';
 
@@ -38,10 +37,9 @@ class ZappingProvider extends ChangeNotifier {
 
   // todo test
   void getMatches() async {
-    _uiState = UiLoading();
-    notifyListeners();
+    _updateState(UiLoading());
 
-    final getArticlesResult = await _zappingRepository.getArticles(zappingUrl);
+    final getArticlesResult = await _zappingRepository.getArticles();
 
     switch (getArticlesResult) {
       case GetArticlesSuccess():
@@ -78,18 +76,10 @@ class ZappingProvider extends ChangeNotifier {
               .add(match);
         }
 
-        _uiState = UiDataReady(_dayMap);
-        notifyListeners();
+        _updateState(UiDataReady(_dayMap));
 
-      case GetArticlesHttpError():
-        _uiState = UiError();
-        notifyListeners();
-      case GetArticlesParseError():
-        _uiState = UiError();
-        notifyListeners();
-      case GetArticlesOtherExceptionError():
-        _uiState = UiError();
-        notifyListeners();
+      case GetArticlesError():
+        _updateState(UiError());
     }
   }
 
@@ -139,5 +129,10 @@ class ZappingProvider extends ChangeNotifier {
       default:
         return FilterError();
     }
+  }
+
+  void _updateState(UiState state) {
+    _uiState = state;
+    notifyListeners();
   }
 }
