@@ -1,39 +1,21 @@
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
+import 'package:zapping_flutter/data/repository/zapping/data_source/zapping_data_source_remote.dart';
 import 'package:zapping_flutter/data/repository/zapping/model/get_articles_result.dart';
 import 'package:zapping_flutter/data/repository/zapping/model/my_article.dart';
 import 'package:zapping_flutter/data/repository/zapping/zapping_repository_impl.dart';
-import 'package:zapping_flutter/data/services/http_client/model/http_get_result.dart';
-import 'package:zapping_flutter/data/services/http_client/my_http_client.dart';
-import 'package:zapping_flutter/data/services/rss/model/my_rss_item.dart';
-import 'package:zapping_flutter/data/services/rss/model/rss_parse_result.dart';
-import 'package:zapping_flutter/data/services/rss/rss_parser.dart';
+import 'package:zapping_flutter/infrastructure/result.dart';
 
 import 'zapping_repository_impl_test.mocks.dart';
 
-@GenerateMocks([MyHttpClient, RssParser])
+@GenerateMocks([ZappingDataSourceRemote])
 void main() {
-  late MockMyHttpClient myHttpClient;
-  late MockRssParser rssParser;
+  late MockZappingDataSourceRemote remoteDataSource;
+
   late ZappingRepositoryImpl zappingRepository;
 
-  const List<MyRssItem> parserOutput = [
-    MyRssItem(
-      title: "Al Hilal x Al-Ettifaq - 08/11 14:45 - SportTV 1",
-      pubDate: "Fri, 08 Nov 2024 14:45:00",
-    ),
-    MyRssItem(
-      title: "Al-Riyadh x Al Nassr - 08/11 17:00 - SportTV 1",
-      pubDate: "Fri, 08 Nov 2024 17:00:00",
-    ),
-    MyRssItem(
-      title: "FC Vizela x GD Chaves - 08/11 18:00 - SportTV +",
-      pubDate: "Fri, 08 Nov 2024 18:00:00",
-    ),
-  ];
-
-  final getArticlesSuccess = GetArticlesSuccess([
+  final articleList = ([
     MyArticle(
       title: "Al Hilal x Al-Ettifaq - 08/11 14:45 - SportTV 1",
       date: "Fri, 08 Nov 2024 14:45:00",
@@ -49,64 +31,63 @@ void main() {
   ]);
 
   setUpAll(() {
-    provideDummy<HttpGetResult>(const HttpGetSuccess(""));
-    provideDummy<RssParseResult>(RssParseSuccess(List.empty()));
+    provideDummy<Result<List<MyArticle>>>(Success([]));
   });
 
   setUp(() {
-    myHttpClient = MockMyHttpClient();
-    rssParser = MockRssParser();
-    zappingRepository = ZappingRepositoryImpl(http: myHttpClient, rssParser: rssParser);
+    remoteDataSource = MockZappingDataSourceRemote();
+    zappingRepository = ZappingRepositoryImpl(remoteDataSource);
   });
 
-  test("good http response and good parsing returns GetArticlesSuccess", () async {
-    when(
-      myHttpClient.getAsString(any, headers: anyNamed("headers")),
-    ).thenAnswer((_) async => const HttpGetSuccess(""));
-    when(rssParser.parse(any)).thenReturn(RssParseSuccess(parserOutput));
+  group("getArticles", () {
+    test("empty remote data source response returns GetArticlesSuccess", () async {
+      when(remoteDataSource.getArticles()).thenAnswer((_) async => Success([]));
 
-    final result = await zappingRepository.getArticles("");
+      final result = await zappingRepository.getArticles();
 
-    expect(result, getArticlesSuccess);
-  });
+      expect(result, GetArticlesSuccess([]));
 
-  group("failure tests", () {
-    test("unsuccessful http response returns GetArticlesHttpError", () async {
-      when(
-        myHttpClient.getAsString(any, headers: anyNamed("headers")),
-      ).thenAnswer((_) async => const HttpGetUnsuccessfulResponse(""));
+      verify(remoteDataSource.getArticles()).called(1);
 
-      expect(await zappingRepository.getArticles(""), GetArticlesHttpError());
+      verifyNoMoreInteractions(remoteDataSource);
     });
 
-    test("exception in http response returns GetArticlesHttpError", () async {
-      when(
-        myHttpClient.getAsString(any, headers: anyNamed("headers")),
-      ).thenAnswer((_) async => HttpGetException(Exception()));
+    test("non empty remote data source response returns GetArticlesSuccess", () async {
+      when(remoteDataSource.getArticles()).thenAnswer((_) async => Success(articleList));
 
-      expect(await zappingRepository.getArticles(""), GetArticlesHttpError());
+      final result = await zappingRepository.getArticles();
+
+      expect(result, GetArticlesSuccess(articleList));
+
+      verify(remoteDataSource.getArticles()).called(1);
+
+      verifyNoMoreInteractions(remoteDataSource);
     });
 
-    test("good http response and bad parsing returns GetArticlesParseError", () async {
-      when(
-        myHttpClient.getAsString(any, headers: anyNamed("headers")),
-      ).thenAnswer((_) async => HttpGetSuccess(""));
-      when(rssParser.parse(any)).thenReturn(RssParseException(Exception()));
+    group("failure tests", () {
+      test("unsuccessful remote data source response returns GetArticlesError", () async {
+        when(remoteDataSource.getArticles()).thenAnswer((_) async => Error());
 
-      final result = await zappingRepository.getArticles("");
+        final result = await zappingRepository.getArticles();
 
-      expect(result, GetArticlesParseError());
-    });
+        expect(result, GetArticlesError());
 
-    test("exception thrown returns GetArticlesOtherExceptionError", () async {
-      final exceptionThrown = Exception();
+        verify(remoteDataSource.getArticles()).called(1);
 
-      when(myHttpClient.getAsString(any, headers: anyNamed("headers"))).thenThrow(exceptionThrown);
-      when(rssParser.parse(any)).thenReturn(RssParseSuccess(List.empty()));
+        verifyNoMoreInteractions(remoteDataSource);
+      });
 
-      final result = await zappingRepository.getArticles("");
+      test("exception in the remote data source returns GetArticlesError", () async {
+        when(remoteDataSource.getArticles()).thenThrow(Exception());
 
-      expect(result, GetArticlesOtherExceptionError(exceptionThrown));
+        final result = await zappingRepository.getArticles();
+
+        expect(result, GetArticlesError());
+
+        verify(remoteDataSource.getArticles()).called(1);
+
+        verifyNoMoreInteractions(remoteDataSource);
+      });
     });
   });
 }

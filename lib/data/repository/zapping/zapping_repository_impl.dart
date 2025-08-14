@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:zapping_flutter/data/repository/zapping/data_sources/zapping_data_source_remote.dart';
+import 'package:zapping_flutter/data/repository/zapping/data_source/zapping_data_source_remote.dart';
 import 'package:zapping_flutter/data/repository/zapping/model/get_articles_result.dart';
 import 'package:zapping_flutter/data/repository/zapping/model/my_article.dart';
 import 'package:zapping_flutter/data/repository/zapping/zapping_repository.dart';

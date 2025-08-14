@@ -10,7 +10,6 @@ import 'package:zapping_flutter/domain/match/model/match_parse_result.dart';
 import 'package:zapping_flutter/domain/match/model/my_match.dart';
 import 'package:zapping_flutter/infrastructure/date/date_utils.dart';
 import 'package:zapping_flutter/infrastructure/di/di.dart';
-import 'package:zapping_flutter/main.dart';
 import 'package:zapping_flutter/ui/zapping/view_model/model/filter_result.dart';
 import 'package:zapping_flutter/ui/zapping/view_model/model/ui_state.dart';
 

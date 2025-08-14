@@ -57,9 +57,6 @@ dependencies:
   http: ^1.4.0
   pretty_http_logger: ^1.0.5
 
-  # properties file parsing
-  properties: ^2.1.1
-
   # rss parsing
   dart_rss: ^3.0.3
 
