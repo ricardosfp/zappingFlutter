@@ -1,5 +1,5 @@
-import 'package:dart_rss/dart_rss.dart';
 import 'package:injectable/injectable.dart';
+import 'package:rss_dart/dart_rss.dart';
 import 'package:zapping_flutter/data/services/rss/model/my_rss_item.dart';
 import 'package:zapping_flutter/data/services/rss/model/rss_parse_result.dart';
 import 'package:zapping_flutter/data/services/rss/rss_parser.dart';

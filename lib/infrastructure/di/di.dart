@@ -13,7 +13,6 @@ void configureDependencies() => getIt.init();
 
 @module
 abstract class Module {
-
   @lazySingleton
   HttpWithMiddleware getHttp() =>
       HttpWithMiddleware.build(middlewares: [HttpLogger(logLevel: LogLevel.BODY)]);
