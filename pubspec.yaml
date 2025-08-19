@@ -19,8 +19,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.8.1
-  flutter: ^3.32.4
+  sdk: ^3.9.0
+  flutter: 3.35.1
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -35,7 +35,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.6
+  cupertino_icons: ^1.0.8
 
   # class utils
   # to generate equals, hashCode and toString for models
@@ -44,34 +44,34 @@ dependencies:
   equatable_annotations: ^1.0.1
 
   # date formatting
-  intl: ^0.19.0
+  intl: ^0.20.2
 
   # dependency injection
-  get_it: ^8.0.3
-  injectable: ^2.5.0
+  get_it: ^8.2.0
+  injectable: ^2.5.1
 
   # immutable collections
   fast_immutable_collections: ^11.0.4
 
   # network
-  http: ^1.4.0
+  http: ^1.5.0
   pretty_http_logger: ^1.0.5
 
   # rss parsing
-  dart_rss: ^3.0.3
+  rss_dart: ^1.0.13
 
   # view model
-  provider: ^6.1.5
+  provider: ^6.1.5+1
 
   # others
   # to remove diacritics from a string, for string comparison
-  diacritic: 0.1.6
+  diacritic: ^0.1.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  test: ^1.25.7
+  test: ^1.26.2
 
   mockito: ^5.4.6
 
@@ -82,9 +82,9 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
 
-  injectable_generator:
+  injectable_generator: ^2.7.0
 
-  build_runner:
+  build_runner: ^2.5.4
 
   equatable_gen: ^1.0.4
 
