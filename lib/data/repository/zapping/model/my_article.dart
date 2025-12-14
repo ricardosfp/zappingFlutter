@@ -6,7 +6,7 @@ part 'my_article.g.dart';
 @generateProps
 final class MyArticle extends Equatable {
   final String title;
-  final String date;
+  final DateTime date;
 
   const MyArticle({required this.title, required this.date});
 

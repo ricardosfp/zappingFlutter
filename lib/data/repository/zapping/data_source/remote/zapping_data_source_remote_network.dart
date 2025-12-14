@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
-import 'package:zapping_flutter/data/repository/zapping/data_source/zapping_data_source_remote.dart';
+import 'package:intl/intl.dart';
+import 'package:zapping_flutter/data/repository/zapping/data_source/remote/zapping_data_source_remote.dart';
 import 'package:zapping_flutter/data/repository/zapping/model/my_article.dart';
 import 'package:zapping_flutter/data/services/http_client/model/http_get_result.dart';
 import 'package:zapping_flutter/data/services/http_client/my_http_client.dart';
@@ -20,6 +21,8 @@ final class ZappingDataSourceRemoteNetwork implements ZappingDataSourceRemote {
     @Named(DiName.zappingUrl) this._zappingUrl,
   );
 
+  static final _dateFormat = DateFormat("EEE, d MMM yyyy HH:mm:ss");
+
   @override
   Future<Result<List<MyArticle>>> getArticles() async {
     try {
@@ -33,9 +36,17 @@ final class ZappingDataSourceRemoteNetwork implements ZappingDataSourceRemote {
           switch (rssParseResult) {
             case RssParseSuccess():
               return Success(
-                rssParseResult.items.map((item) {
-                  return MyArticle(title: item.title, date: item.pubDate);
-                }).toList(),
+                rssParseResult.items
+                    .map((item) {
+                      try {
+                        // there might be an exception in date parsing
+                        return MyArticle(title: item.title, date: _dateFormat.parse(item.pubDate));
+                      } catch (_) {
+                        return null;
+                      }
+                    })
+                    .nonNulls
+                    .toList(),
               );
 
             case RssParseError():

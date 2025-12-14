@@ -23,16 +23,6 @@ sealed class MatchParseError extends MatchParseResult {
 }
 
 @generateProps
-final class MatchParseDateError extends MatchParseError {
-  final FormatException exception;
-
-  const MatchParseDateError(this.exception);
-
-  @override
-  List<Object?> get props => _$props;
-}
-
-@generateProps
 final class MatchParseTitleError extends MatchParseError {
   @override
   List<Object?> get props => _$props;
@@ -40,7 +30,7 @@ final class MatchParseTitleError extends MatchParseError {
 
 @generateProps
 final class MatchParseOtherExceptionError extends MatchParseError {
-  final Exception exception;
+  final Object exception;
 
   const MatchParseOtherExceptionError(this.exception);
 
