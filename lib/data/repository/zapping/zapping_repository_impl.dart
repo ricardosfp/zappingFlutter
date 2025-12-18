@@ -26,7 +26,7 @@ final class ZappingRepositoryImpl implements ZappingRepository {
       switch (remoteResult) {
         case Success<List<MyArticle>>():
           // save the articles locally
-          _localSource.saveArticles(remoteResult.value);
+          await _localSource.saveArticles(remoteResult.value);
         default:
       }
 

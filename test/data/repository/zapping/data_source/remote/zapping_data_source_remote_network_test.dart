@@ -21,6 +21,7 @@ void main() {
   late ZappingDataSourceRemote dataSource;
 
   const zappingUrl = "";
+  const httpSuccess = HttpGetSuccess("");
 
   const List<MyRssItem> parserOutput = [
     MyRssItem(
@@ -37,23 +38,36 @@ void main() {
     ),
   ];
 
-  const List<MyArticle> getArticlesOutput = [
+  final List<MyArticle> getArticlesOutput = [
     MyArticle(
       title: "Al Hilal x Al-Ettifaq - 08/11 14:45 - SportTV 1",
-      date: "Fri, 08 Nov 2024 14:45:00",
+      date: DateTime(2024, 11, 8, 14, 45),
     ),
     MyArticle(
       title: "Al-Riyadh x Al Nassr - 08/11 17:00 - SportTV 1",
-      date: "Fri, 08 Nov 2024 17:00:00",
+      date: DateTime(2024, 11, 8, 17),
     ),
     MyArticle(
       title: "FC Vizela x GD Chaves - 08/11 18:00 - SportTV +",
-      date: "Fri, 08 Nov 2024 18:00:00",
+      date: DateTime(2024, 11, 8, 18),
     ),
   ];
 
+  void verifyBothFunctionsCalled(String httpBody) {
+    verify(
+      httpClient.getAsString(
+        zappingUrl,
+        headers: argThat(equals({"user-agent": ""}), named: "headers"),
+      ),
+    ).called(1);
+    verify(rssParser.parse(httpBody)).called(1);
+
+    verifyNoMoreInteractions(httpClient);
+    verifyNoMoreInteractions(rssParser);
+  }
+
   setUpAll(() {
-    provideDummy<HttpGetResult>(HttpGetSuccess(""));
+    provideDummy<HttpGetResult>(httpSuccess);
     provideDummy<RssParseResult>(RssParseSuccess([]));
   });
 
@@ -64,137 +78,139 @@ void main() {
     dataSource = ZappingDataSourceRemoteNetwork(httpClient, rssParser, zappingUrl);
   });
 
-  // todo create a test where some MyRssItem have an invalid pubDate
-
   group("getArticles", () {
     test("empty list from the parser returns Success with an empty list", () async {
-      final httpResult = HttpGetSuccess("");
       when(
         httpClient.getAsString(any, headers: anyNamed("headers")),
-      ).thenAnswer((_) async => httpResult);
+      ).thenAnswer((_) async => httpSuccess);
       when(rssParser.parse(any)).thenReturn(RssParseSuccess([]));
 
       final result = await dataSource.getArticles();
 
       expect(result, Success<List<MyArticle>>([]));
 
-      verify(
-        httpClient.getAsString(
-          zappingUrl,
-          headers: argThat(equals({"user-agent": ""}), named: "headers"),
-        ),
-      ).called(1);
-      verify(rssParser.parse(httpResult.bodyAsString)).called(1);
-
-      verifyNoMoreInteractions(httpClient);
-      verifyNoMoreInteractions(rssParser);
+      verifyBothFunctionsCalled(httpSuccess.bodyAsString);
     });
 
     test("non empty list from the parser returns Success with a non empty list", () async {
-      final httpResult = HttpGetSuccess("");
       when(
         httpClient.getAsString(any, headers: anyNamed("headers")),
-      ).thenAnswer((_) async => httpResult);
+      ).thenAnswer((_) async => httpSuccess);
       when(rssParser.parse(any)).thenReturn(RssParseSuccess(parserOutput));
 
       final result = await dataSource.getArticles();
 
       expect(result, Success(getArticlesOutput));
 
-      verify(
-        httpClient.getAsString(
-          zappingUrl,
-          headers: argThat(equals({"user-agent": ""}), named: "headers"),
-        ),
-      ).called(1);
-      verify(rssParser.parse(httpResult.bodyAsString)).called(1);
-
-      verifyNoMoreInteractions(httpClient);
-      verifyNoMoreInteractions(rssParser);
+      verifyBothFunctionsCalled(httpSuccess.bodyAsString);
     });
 
-    test("unsuccessful http response returns Error", () async {
-      when(
-        httpClient.getAsString(any, headers: anyNamed("headers")),
-      ).thenAnswer((_) async => HttpGetUnsuccessfulResponse(""));
+    group("failure tests", () {
+      test("unsuccessful http response returns Error", () async {
+        when(
+          httpClient.getAsString(any, headers: anyNamed("headers")),
+        ).thenAnswer((_) async => HttpGetUnsuccessfulResponse(""));
 
-      final result = await dataSource.getArticles();
+        final result = await dataSource.getArticles();
 
-      expect(result, Error<List<MyArticle>>());
+        expect(result, Error<List<MyArticle>>());
 
-      verify(
-        httpClient.getAsString(
-          zappingUrl,
-          headers: argThat(equals({"user-agent": ""}), named: "headers"),
-        ),
-      ).called(1);
+        verify(
+          httpClient.getAsString(
+            zappingUrl,
+            headers: argThat(equals({"user-agent": ""}), named: "headers"),
+          ),
+        ).called(1);
 
-      verifyNoMoreInteractions(httpClient);
-      verifyZeroInteractions(rssParser);
-    });
+        verifyNoMoreInteractions(httpClient);
+        verifyZeroInteractions(rssParser);
+      });
 
-    test("unsuccessful parser response returns Error", () async {
-      final httpResult = HttpGetSuccess("");
-      when(
-        httpClient.getAsString(any, headers: anyNamed("headers")),
-      ).thenAnswer((_) async => httpResult);
-      when(rssParser.parse(any)).thenAnswer((realInvocation) => RssParseException(Exception()));
+      test("unsuccessful parser response returns Error", () async {
+        when(
+          httpClient.getAsString(any, headers: anyNamed("headers")),
+        ).thenAnswer((_) async => httpSuccess);
+        when(rssParser.parse(any)).thenAnswer((realInvocation) => RssParseException(Exception()));
 
-      final result = await dataSource.getArticles();
+        final result = await dataSource.getArticles();
 
-      expect(result, Error<List<MyArticle>>());
+        expect(result, Error<List<MyArticle>>());
 
-      verify(
-        httpClient.getAsString(
-          zappingUrl,
-          headers: argThat(equals({"user-agent": ""}), named: "headers"),
-        ),
-      ).called(1);
-      verify(rssParser.parse(httpResult.bodyAsString)).called(1);
+        verifyBothFunctionsCalled(httpSuccess.bodyAsString);
+      });
 
-      verifyNoMoreInteractions(httpClient);
-      verifyNoMoreInteractions(rssParser);
-    });
+      test("exception in the http client returns Error", () async {
+        when(httpClient.getAsString(any, headers: anyNamed("headers"))).thenThrow(Exception());
 
-    test("exception in the http client returns Error", () async {
-      when(httpClient.getAsString(any, headers: anyNamed("headers"))).thenThrow(Exception());
+        final result = await dataSource.getArticles();
 
-      final result = await dataSource.getArticles();
+        expect(result, Error<List<MyArticle>>());
 
-      expect(result, Error<List<MyArticle>>());
+        verify(
+          httpClient.getAsString(
+            zappingUrl,
+            headers: argThat(equals({"user-agent": ""}), named: "headers"),
+          ),
+        ).called(1);
 
-      verify(
-        httpClient.getAsString(
-          zappingUrl,
-          headers: argThat(equals({"user-agent": ""}), named: "headers"),
-        ),
-      ).called(1);
+        verifyNoMoreInteractions(httpClient);
+        verifyZeroInteractions(rssParser);
+      });
 
-      verifyNoMoreInteractions(httpClient);
-      verifyZeroInteractions(rssParser);
-    });
+      test("exception in the parser returns Error", () async {
+        when(
+          httpClient.getAsString(any, headers: anyNamed("headers")),
+        ).thenAnswer((_) async => httpSuccess);
+        when(rssParser.parse(any)).thenThrow(Exception());
 
-    test("exception in the parser returns Error", () async {
-      final httpResult = HttpGetSuccess("");
-      when(
-        httpClient.getAsString(any, headers: anyNamed("headers")),
-      ).thenAnswer((_) async => httpResult);
-      when(rssParser.parse(any)).thenThrow(Exception());
+        final result = await dataSource.getArticles();
 
-      final result = await dataSource.getArticles();
+        expect(result, Error<List<MyArticle>>());
 
-      expect(result, Error<List<MyArticle>>());
+        verifyBothFunctionsCalled(httpSuccess.bodyAsString);
+      });
 
-      verify(
-        httpClient.getAsString(
-          zappingUrl,
-          headers: argThat(equals({"user-agent": ""}), named: "headers"),
-        ),
-      ).called(1);
-      verify(rssParser.parse(httpResult.bodyAsString)).called(1);
+      test("exception when parsing a date ignores that match", () async {
+        when(
+          httpClient.getAsString(any, headers: anyNamed("headers")),
+        ).thenAnswer((_) async => httpSuccess);
 
-      verifyNoMoreInteractions(httpClient);
-      verifyNoMoreInteractions(rssParser);
+        // some dates here are not in the format that we expect
+        const List<MyRssItem> parserOutputWrongDate = [
+          MyRssItem(
+            title: "Al Hilal x Al-Ettifaq - 08/11 14:45 - SportTV 1",
+            // this date is wrong, the seconds are missing
+            pubDate: "Fri, 08 Nov 2024 14:45",
+          ),
+          MyRssItem(
+            title: "Al-Riyadh x Al Nassr - 08/11 17:00 - SportTV 1",
+            pubDate: "Fri, 08 Nov 2024 17:00:00",
+          ),
+          MyRssItem(
+            title: "FC Vizela x GD Chaves - 08/11 18:00 - SportTV +",
+            pubDate: "Fri, 08 Nov 2024 18:00:00",
+          ),
+        ];
+        when(rssParser.parse(any)).thenReturn(RssParseSuccess(parserOutputWrongDate));
+
+        final result = await dataSource.getArticles();
+
+        // we expect the first rssItem above to not be successfully parsed
+        final expectedResult = Success([
+          MyArticle(
+            title: "Al-Riyadh x Al Nassr - 08/11 17:00 - SportTV 1",
+            date: DateTime(2024, 11, 8, 17),
+          ),
+          MyArticle(
+            title: "FC Vizela x GD Chaves - 08/11 18:00 - SportTV +",
+            date: DateTime(2024, 11, 8, 18),
+          ),
+        ]);
+
+        expect(result, expectedResult);
+
+        verifyBothFunctionsCalled(httpSuccess.bodyAsString);
+      });
     });
   });
 }

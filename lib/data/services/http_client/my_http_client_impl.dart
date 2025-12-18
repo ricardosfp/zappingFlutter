@@ -20,7 +20,7 @@ final class HttpClientImpl implements MyHttpClient {
       } else {
         return HttpGetUnsuccessfulResponse(response.body);
       }
-    } on Exception catch (ex) {
+    } catch (ex) {
       return HttpGetException(ex);
     }
   }
