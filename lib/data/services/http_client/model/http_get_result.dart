@@ -33,7 +33,7 @@ final class HttpGetUnsuccessfulResponse extends HttpGetError {
 
 @generateProps
 final class HttpGetException extends HttpGetError {
-  final Exception exception;
+  final Object exception;
 
   const HttpGetException(this.exception);
 

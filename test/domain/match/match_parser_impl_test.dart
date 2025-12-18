@@ -8,37 +8,36 @@ void main() {
   late MatchParserImpl matchParser;
 
   //    "Peñarol x Atlético Mineiro - 14/05 23:00 - SportTv1"
-  const validArticleDateString = "Tue, 14 May 2024 23:00:00";
+  final validArticleDate = DateTime(2024, 5, 14, 23);
   const validArticleHomeTeam = "Peñarol";
   const validArticleAwayTeam = "Atlético Mineiro";
   const validArticleChannel = "SportTv1";
   const validArticleTitle =
       "$validArticleHomeTeam x $validArticleAwayTeam - 14/05 23:00 - $validArticleChannel";
-  const validArticle = MyArticle(title: validArticleTitle, date: validArticleDateString);
+  final validArticle = MyArticle(title: validArticleTitle, date: validArticleDate);
 
   final matchParseSuccess = MatchParseSuccess(
     MyMatch(
       homeTeam: validArticleHomeTeam,
       awayTeam: validArticleAwayTeam,
-      date: DateTime(2024, 5, 14, 23, 0, 0),
+      date: validArticleDate,
       channel: validArticleChannel,
       originalText: validArticleTitle,
     ),
   );
 
   // invalid articles
-  const invalidArticleInvalidDate = MyArticle(title: validArticleTitle, date: "14 May 24");
-  const invalidArticleInvalidHomeTeam = MyArticle(
+  final invalidArticleInvalidHomeTeam = MyArticle(
     title: " x Atlético Mineiro - 14/05 23:00 - SportTv1",
-    date: validArticleDateString,
+    date: validArticleDate,
   );
-  const invalidArticleInvalidAwayTeam = MyArticle(
+  final invalidArticleInvalidAwayTeam = MyArticle(
     title: "Peñarol x  - 14/05 23:00 - SportTv1",
-    date: validArticleDateString,
+    date: validArticleDate,
   );
-  const invalidArticleInvalidChannel = MyArticle(
+  final invalidArticleInvalidChannel = MyArticle(
     title: "Peñarol x Atlético Mineiro - 14/05 23:00 - ",
-    date: validArticleDateString,
+    date: validArticleDate,
   );
 
   setUp(() {
@@ -52,12 +51,6 @@ void main() {
   });
 
   group("failure tests", () {
-    test("parse invalid date returns date error", () {
-      final matchParseResult = matchParser.parse(invalidArticleInvalidDate);
-
-      expect(matchParseResult, isA<MatchParseDateError>());
-    });
-
     test("parse invalid home team returns title error", () {
       final matchParseResult = matchParser.parse(invalidArticleInvalidHomeTeam);
 
