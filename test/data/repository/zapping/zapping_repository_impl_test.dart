@@ -19,6 +19,10 @@ void main() {
 
   late ZappingRepositoryImpl zappingRepository;
 
+  final localArticles = [MyArticle(title: "A", date: DateTime(2025, 12, 10, 10))];
+  final remoteArticles = [MyArticle(title: "B", date: DateTime(2025, 12, 10, 12))];
+  final standardDate = DateTime(2025, 12, 10);
+
   setUpAll(() {
     provideDummy<Result<List<MyArticle>>>(Success([]));
   });
@@ -33,20 +37,50 @@ void main() {
   });
 
   group("getArticles", () {
-    test("remote success, local success saves the articles and returns Success", () async {
-      final articles = [MyArticle(title: "A", date: DateTime(2025, 12, 10, 10))];
+    test("calls the data sources with the correct parameters", () async {
+      final localArticles = [MyArticle(title: "Teste A", date: DateTime(2025, 12, 8, 10))];
+      final remoteArticles = [MyArticle(title: "Teste B", date: DateTime(2025, 12, 8, 12))];
+      final date = DateTime(2025, 12, 18);
 
-      when(remoteDataSource.getArticles()).thenAnswer((_) async => Success(articles));
-      when(localDataSource.getArticles()).thenAnswer((_) async => Success(articles));
+      when(
+        remoteDataSource.getArticles(thisDateOrAfter: anyNamed("thisDateOrAfter")),
+      ).thenAnswer((_) async => Success(remoteArticles));
+      when(
+        localDataSource.getArticles(thisDateOrAfter: anyNamed("thisDateOrAfter")),
+      ).thenAnswer((_) async => Success(localArticles));
 
-      final result = await zappingRepository.getArticles();
+      final result = await zappingRepository.getArticles(thisDateOrAfter: date);
 
-      expect(result, GetArticlesSuccess(articles));
+      expect(result, GetArticlesSuccess(localArticles));
 
       verifyInOrder([
-        remoteDataSource.getArticles(),
-        localDataSource.saveArticles(articles),
-        localDataSource.getArticles(),
+        remoteDataSource.getArticles(thisDateOrAfter: date),
+        localDataSource.saveArticles(remoteArticles),
+        localDataSource.getArticles(thisDateOrAfter: date),
+      ]);
+
+      verifyNoMoreInteractions(localDataSource);
+      verifyNoMoreInteractions(remoteDataSource);
+    });
+
+    test("remote success, local success saves the articles and returns Success", () async {
+      final date = standardDate;
+
+      when(
+        remoteDataSource.getArticles(thisDateOrAfter: anyNamed("thisDateOrAfter")),
+      ).thenAnswer((_) async => Success(remoteArticles));
+      when(
+        localDataSource.getArticles(thisDateOrAfter: anyNamed("thisDateOrAfter")),
+      ).thenAnswer((_) async => Success(localArticles));
+
+      final result = await zappingRepository.getArticles(thisDateOrAfter: date);
+
+      expect(result, GetArticlesSuccess(localArticles));
+
+      verifyInOrder([
+        remoteDataSource.getArticles(thisDateOrAfter: date),
+        localDataSource.saveArticles(remoteArticles),
+        localDataSource.getArticles(thisDateOrAfter: date),
       ]);
 
       verifyNoMoreInteractions(localDataSource);
@@ -54,19 +88,23 @@ void main() {
     });
 
     test("remote success, local failure saves the articles and returns Error", () async {
-      final articles = [MyArticle(title: "A", date: DateTime(2025, 12, 10, 10))];
+      final date = standardDate;
 
-      when(remoteDataSource.getArticles()).thenAnswer((_) async => Success(articles));
-      when(localDataSource.getArticles()).thenAnswer((_) async => Error());
+      when(
+        remoteDataSource.getArticles(thisDateOrAfter: anyNamed("thisDateOrAfter")),
+      ).thenAnswer((_) async => Success(remoteArticles));
+      when(
+        localDataSource.getArticles(thisDateOrAfter: anyNamed("thisDateOrAfter")),
+      ).thenAnswer((_) async => Error());
 
-      final result = await zappingRepository.getArticles();
+      final result = await zappingRepository.getArticles(thisDateOrAfter: date);
 
       expect(result, GetArticlesError());
 
       verifyInOrder([
-        remoteDataSource.getArticles(),
-        localDataSource.saveArticles(articles),
-        localDataSource.getArticles(),
+        remoteDataSource.getArticles(thisDateOrAfter: date),
+        localDataSource.saveArticles(remoteArticles),
+        localDataSource.getArticles(thisDateOrAfter: date),
       ]);
 
       verifyNoMoreInteractions(localDataSource);
@@ -74,44 +112,63 @@ void main() {
     });
 
     test("remote failure, local success does not save the articles and returns Success", () async {
-      final articles = [MyArticle(title: "A", date: DateTime(2025, 12, 10, 10))];
+      final date = standardDate;
 
-      when(remoteDataSource.getArticles()).thenAnswer((_) async => Error());
-      when(localDataSource.getArticles()).thenAnswer((_) async => Success(articles));
+      when(
+        remoteDataSource.getArticles(thisDateOrAfter: anyNamed("thisDateOrAfter")),
+      ).thenAnswer((_) async => Error());
+      when(
+        localDataSource.getArticles(thisDateOrAfter: anyNamed("thisDateOrAfter")),
+      ).thenAnswer((_) async => Success(localArticles));
 
-      final result = await zappingRepository.getArticles();
+      final result = await zappingRepository.getArticles(thisDateOrAfter: date);
 
-      expect(result, GetArticlesSuccess(articles));
+      expect(result, GetArticlesSuccess(localArticles));
 
-      verifyInOrder([remoteDataSource.getArticles(), localDataSource.getArticles()]);
+      verifyInOrder([
+        remoteDataSource.getArticles(thisDateOrAfter: date),
+        localDataSource.getArticles(thisDateOrAfter: date),
+      ]);
 
       verifyNoMoreInteractions(localDataSource);
       verifyNoMoreInteractions(remoteDataSource);
     });
 
     test("remote failure, local failure returns error", () async {
-      when(remoteDataSource.getArticles()).thenAnswer((_) async => Error());
-      when(localDataSource.getArticles()).thenAnswer((_) async => Error());
+      final date = standardDate;
 
-      final result = await zappingRepository.getArticles();
+      when(
+        remoteDataSource.getArticles(thisDateOrAfter: anyNamed("thisDateOrAfter")),
+      ).thenAnswer((_) async => Error());
+      when(
+        localDataSource.getArticles(thisDateOrAfter: anyNamed("thisDateOrAfter")),
+      ).thenAnswer((_) async => Error());
+
+      final result = await zappingRepository.getArticles(thisDateOrAfter: date);
 
       expect(result, GetArticlesError());
 
-      verifyInOrder([remoteDataSource.getArticles(), localDataSource.getArticles()]);
+      verifyInOrder([
+        remoteDataSource.getArticles(thisDateOrAfter: date),
+        localDataSource.getArticles(thisDateOrAfter: date),
+      ]);
 
       verifyNoMoreInteractions(localDataSource);
       verifyNoMoreInteractions(remoteDataSource);
     });
 
     test("exception returns Error", () async {
-      when(remoteDataSource.getArticles()).thenThrow(Exception());
-      when(localDataSource.getArticles()).thenAnswer((_) async => Success([]));
+      final date = standardDate;
 
-      final result = await zappingRepository.getArticles();
+      when(
+        remoteDataSource.getArticles(thisDateOrAfter: anyNamed("thisDateOrAfter")),
+      ).thenThrow(Exception());
+
+      final result = await zappingRepository.getArticles(thisDateOrAfter: date);
 
       expect(result, GetArticlesError());
 
-      verify(remoteDataSource.getArticles()).called(1);
+      verify(remoteDataSource.getArticles(thisDateOrAfter: date)).called(1);
 
       verifyZeroInteractions(localDataSource);
       verifyNoMoreInteractions(remoteDataSource);
