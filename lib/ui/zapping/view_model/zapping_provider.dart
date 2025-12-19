@@ -39,7 +39,11 @@ class ZappingProvider extends ChangeNotifier {
   void getMatches() async {
     _updateState(UiLoading());
 
-    final getArticlesResult = await _zappingRepository.getArticles();
+    // todo get the time from a centralized place so we are not dependent on the device's time
+    // we subtract 2 hours to have a buffer for matches that have not finished yet
+    final currentDate = DateTime.now().subtract(Duration(hours: 2));
+
+    final getArticlesResult = await _zappingRepository.getArticles(thisDateOrAfter: currentDate);
 
     switch (getArticlesResult) {
       case GetArticlesSuccess():
@@ -57,13 +61,6 @@ class ZappingProvider extends ChangeNotifier {
             })
             .nonNulls
             .toList();
-
-        // order matches by date. Do not assume that they come ordered
-        // if we order the list of matches then we do not need to order the map
-        // it is simpler this way. Or else I could use a SplayTreeMap
-        matches.sort((a, b) {
-          return a.date.compareTo(b.date);
-        });
 
         _dayMap.clear();
 

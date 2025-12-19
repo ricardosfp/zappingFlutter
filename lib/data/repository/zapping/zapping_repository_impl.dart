@@ -18,10 +18,10 @@ final class ZappingRepositoryImpl implements ZappingRepository {
        _remoteSource = remoteSource;
 
   @override
-  Future<GetArticlesResult> getArticles() async {
+  Future<GetArticlesResult> getArticles({required DateTime thisDateOrAfter}) async {
     try {
       // get the articles from the remote source
-      final remoteResult = await _remoteSource.getArticles();
+      final remoteResult = await _remoteSource.getArticles(thisDateOrAfter: thisDateOrAfter);
 
       switch (remoteResult) {
         case Success<List<MyArticle>>():
@@ -31,7 +31,7 @@ final class ZappingRepositoryImpl implements ZappingRepository {
       }
 
       // get the results from the local source and return them
-      final localResult = await _localSource.getArticles();
+      final localResult = await _localSource.getArticles(thisDateOrAfter: thisDateOrAfter);
 
       switch (localResult) {
         case Success<List<MyArticle>>():

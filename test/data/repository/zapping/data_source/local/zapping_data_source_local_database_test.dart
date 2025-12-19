@@ -29,7 +29,7 @@ void main() {
 
   group("getArticles", () {
     test("empty database returns an empty list", () async {
-      final result = await dataSource.getArticles();
+      final result = await dataSource.getArticles(thisDateOrAfter: DateTime(2025, 12, 10));
 
       expect(result, Success<List<MyArticle>>([]));
     });
@@ -45,11 +45,36 @@ void main() {
         (o) => parameters.map((e) => o(title: e.title, date: e.date)),
       );
 
-      final result = await dataSource.getArticles();
+      final result = await dataSource.getArticles(thisDateOrAfter: DateTime(2025, 12, 10));
 
       expect(
         result,
         Success(parameters.map((e) => MyArticle(title: e.title, date: e.date)).toList()),
+      );
+    });
+
+    test("only returns articles on or after the passed date", () async {
+      final articlesToSave = [
+        MyArticle(title: "A", date: DateTime(2025, 12, 17, 10)),
+        MyArticle(title: "B", date: DateTime(2025, 12, 17, 12)),
+        MyArticle(title: "C", date: DateTime(2025, 12, 17, 14)),
+        MyArticle(title: "D", date: DateTime(2025, 12, 17, 16)),
+      ];
+
+      // add articles to the database
+      await database.managers.articleTable.bulkCreate(
+        (o) => articlesToSave.map((e) => o(title: e.title, date: e.date)),
+      );
+
+      final result = await dataSource.getArticles(thisDateOrAfter: DateTime(2025, 12, 17, 12));
+
+      expect(
+        result,
+        Success([
+          MyArticle(title: "B", date: DateTime(2025, 12, 17, 12)),
+          MyArticle(title: "C", date: DateTime(2025, 12, 17, 14)),
+          MyArticle(title: "D", date: DateTime(2025, 12, 17, 16)),
+        ]),
       );
     });
 
@@ -66,7 +91,7 @@ void main() {
         (o) => articlesToSave.map((e) => o(title: e.title, date: e.date)),
       );
 
-      final result = await dataSource.getArticles();
+      final result = await dataSource.getArticles(thisDateOrAfter: DateTime(2025, 12, 10));
 
       final expectedResult = Success([
         MyArticle(title: "A", date: DateTime(2025, 12, 17, 10)),

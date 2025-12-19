@@ -12,10 +12,13 @@ class ZappingDataSourceLocalDatabase implements ZappingDataSourceLocal {
   ZappingDataSourceLocalDatabase({required this.database});
 
   @override
-  Future<Result<List<MyArticle>>> getArticles() async {
+  Future<Result<List<MyArticle>>> getArticles({required DateTime thisDateOrAfter}) async {
     try {
       // get the articles from the database
-      final result = await database.managers.articleTable.orderBy((o) => o.date.asc()).get();
+      final result = await database.managers.articleTable
+          .filter((f) => f.date.isAfterOrOn(thisDateOrAfter))
+          .orderBy((o) => o.date.asc())
+          .get();
 
       // convert them into [MyArticle]
       final mappedResult = result

@@ -22,8 +22,9 @@ void main() {
 
   const zappingUrl = "";
   const httpSuccess = HttpGetSuccess("");
+  final standardDateTime = DateTime(2024, 11, 6);
 
-  const List<MyRssItem> parserOutput = [
+  const parserOutput = [
     MyRssItem(
       title: "Al Hilal x Al-Ettifaq - 08/11 14:45 - SportTV 1",
       pubDate: "Fri, 08 Nov 2024 14:45:00",
@@ -38,7 +39,7 @@ void main() {
     ),
   ];
 
-  final List<MyArticle> getArticlesOutput = [
+  final getArticlesOutput = [
     MyArticle(
       title: "Al Hilal x Al-Ettifaq - 08/11 14:45 - SportTV 1",
       date: DateTime(2024, 11, 8, 14, 45),
@@ -85,7 +86,7 @@ void main() {
       ).thenAnswer((_) async => httpSuccess);
       when(rssParser.parse(any)).thenReturn(RssParseSuccess([]));
 
-      final result = await dataSource.getArticles();
+      final result = await dataSource.getArticles(thisDateOrAfter: standardDateTime);
 
       expect(result, Success<List<MyArticle>>([]));
 
@@ -98,9 +99,33 @@ void main() {
       ).thenAnswer((_) async => httpSuccess);
       when(rssParser.parse(any)).thenReturn(RssParseSuccess(parserOutput));
 
-      final result = await dataSource.getArticles();
+      final result = await dataSource.getArticles(thisDateOrAfter: standardDateTime);
 
       expect(result, Success(getArticlesOutput));
+
+      verifyBothFunctionsCalled(httpSuccess.bodyAsString);
+    });
+
+    test("only returns articles on or after the passed date", () async {
+      when(
+        httpClient.getAsString(any, headers: anyNamed("headers")),
+      ).thenAnswer((_) async => httpSuccess);
+      when(rssParser.parse(any)).thenReturn(RssParseSuccess(parserOutput));
+
+      final result = await dataSource.getArticles(thisDateOrAfter: DateTime(2024, 11, 8, 17));
+
+      final expectedResult = Success([
+        MyArticle(
+          title: "Al-Riyadh x Al Nassr - 08/11 17:00 - SportTV 1",
+          date: DateTime(2024, 11, 8, 17),
+        ),
+        MyArticle(
+          title: "FC Vizela x GD Chaves - 08/11 18:00 - SportTV +",
+          date: DateTime(2024, 11, 8, 18),
+        ),
+      ]);
+
+      expect(result, expectedResult);
 
       verifyBothFunctionsCalled(httpSuccess.bodyAsString);
     });
@@ -111,7 +136,7 @@ void main() {
           httpClient.getAsString(any, headers: anyNamed("headers")),
         ).thenAnswer((_) async => HttpGetUnsuccessfulResponse(""));
 
-        final result = await dataSource.getArticles();
+        final result = await dataSource.getArticles(thisDateOrAfter: standardDateTime);
 
         expect(result, Error<List<MyArticle>>());
 
@@ -132,7 +157,7 @@ void main() {
         ).thenAnswer((_) async => httpSuccess);
         when(rssParser.parse(any)).thenAnswer((realInvocation) => RssParseException(Exception()));
 
-        final result = await dataSource.getArticles();
+        final result = await dataSource.getArticles(thisDateOrAfter: standardDateTime);
 
         expect(result, Error<List<MyArticle>>());
 
@@ -142,7 +167,7 @@ void main() {
       test("exception in the http client returns Error", () async {
         when(httpClient.getAsString(any, headers: anyNamed("headers"))).thenThrow(Exception());
 
-        final result = await dataSource.getArticles();
+        final result = await dataSource.getArticles(thisDateOrAfter: standardDateTime);
 
         expect(result, Error<List<MyArticle>>());
 
@@ -163,7 +188,7 @@ void main() {
         ).thenAnswer((_) async => httpSuccess);
         when(rssParser.parse(any)).thenThrow(Exception());
 
-        final result = await dataSource.getArticles();
+        final result = await dataSource.getArticles(thisDateOrAfter: standardDateTime);
 
         expect(result, Error<List<MyArticle>>());
 
@@ -193,7 +218,7 @@ void main() {
         ];
         when(rssParser.parse(any)).thenReturn(RssParseSuccess(parserOutputWrongDate));
 
-        final result = await dataSource.getArticles();
+        final result = await dataSource.getArticles(thisDateOrAfter: standardDateTime);
 
         // we expect the first rssItem above to not be successfully parsed
         final expectedResult = Success([

@@ -24,7 +24,7 @@ final class ZappingDataSourceRemoteNetwork implements ZappingDataSourceRemote {
   static final _dateFormat = DateFormat("EEE, d MMM yyyy HH:mm:ss");
 
   @override
-  Future<Result<List<MyArticle>>> getArticles() async {
+  Future<Result<List<MyArticle>>> getArticles({required DateTime thisDateOrAfter}) async {
     try {
       // the user-agent part is because the website was giving us error 429 with the default user-agent
       final httpGetResult = await _httpClient.getAsString(_zappingUrl, headers: {"user-agent": ""});
@@ -46,7 +46,9 @@ final class ZappingDataSourceRemoteNetwork implements ZappingDataSourceRemote {
                       }
                     })
                     .nonNulls
-                    .toList(),
+                    .where((element) => element.date.compareTo(thisDateOrAfter) >= 0)
+                    .toList()
+                  ..sort((a, b) => a.date.compareTo(b.date)),
               );
 
             case RssParseError():
