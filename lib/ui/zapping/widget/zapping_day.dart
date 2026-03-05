@@ -11,14 +11,15 @@ class ZappingDay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: ListView.separated(
         itemCount: _matches.length,
         itemBuilder: (context, index) {
           final match = _matches[index];
 
-          return Container(
-            margin: const EdgeInsets.only(left: 10),
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: ZappingItem(match: match),
           );
         },
